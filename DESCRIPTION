@@ -1,5 +1,5 @@
 Package: TRskim
-Title: What the Package Does (One Line, Title Case)
+Title: TRskim is an R package that visualizes tandem repeat composition by decomposing sequences into known motifs, aligning them, and generating tile plots to compare motif patterns across alleles. 
 Version: 0.0.0.9000
 Authors@R: 
     person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
