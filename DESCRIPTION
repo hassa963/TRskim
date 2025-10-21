@@ -5,9 +5,16 @@ Version: 0.1.0
 Authors@R: 
     person("Nour", "Hassan", , "nour.hassan@mail.utoronto.ca", role = c("aut", "cre"))
 Maintainer: Nour Hassan <nour.hassan@mail.utoronto.ca>
-Description:TRskim is an R package that visualizes tandem repeat composition by 
+Description: TRskim is an R package that visualizes tandem repeat composition by 
   decomposing sequences into known motifs, aligning them, and generating tile 
   plots to compare motif patterns across alleles.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports:
+  Biostrings,
+  ggplot2,
+  DECIPHER
+  
