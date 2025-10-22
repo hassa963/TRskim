@@ -4,14 +4,7 @@
 \alias{decomposeTR}
 \title{Decomposes allele into motifs}
 \usage{
-decomposeTR(
-  allele,
-  motifs,
-  match = 1,
-  mis_match = -1,
-  indel = -2,
-  allowence = 0
-)
+decomposeTR(allele, motifs, match = 1, indel = -1, allowence = 0)
 }
 \arguments{
 \item{allele}{DNAString or character string of the Tandem repeat}
@@ -21,14 +14,11 @@ motifs of the Tandem Repeat}
 
 \item{match}{score for if motif matches sequence this is by default 1}
 
-\item{mis_match}{score for if there is a mismatch between sequence and motifs
-by default this is -1}
-
 \item{indel}{score for if there is an insertion or deletion in sequence by
-default this is -2}
+default this is -1}
 
 \item{allowence}{is the number of mismatches between the motif
-and the sequence permitted to be still be later encoded as a motif by default
+and the sequence permitted to be still be later encoded as a motif.By default
 this is 0}
 }
 \description{
