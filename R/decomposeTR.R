@@ -43,49 +43,60 @@ decomposeTR <- function(allele, motifs, match = 1, mis_match = -1, indel = -2, a
   hits_df <- hits_df[order(hits_df$end), ]
 
   # Fill DP
-  for(i in seq_len(nrow(hits_df))) {
+  for (i in seq_len(nrow(hits_df))) {
     s <- hits_df[i, ]
     motif_seq <- as.character(motifs[[s$motif_idx]])
     subseq_allele <- as.character(subseq(allele, s$start, s$end))
+
+    # Score this motif match
     score <- sum(score_match_custom(subseq_allele, motif_seq, match, mis_match))
 
-    # Previous best score
-    prev_score_noindel <- DP[s$start]           # from previous motif
-    prev_score_indel <- max(DP[s$start:(s$end)]) + indel  # consider gaps
-    if(prev_score_noindel >= prev_score_indel) {
-      prev_score <- prev_score_noindel
-      from_indel <- FALSE
-    } else {
-      prev_score <- prev_score_indel
-      from_indel <- TRUE
+    # Scores for continuation vs gap
+    prev_score_motif <- DP[s$start]
+    prev_score_indel_vals <- DP[max(1, s$start - 2):(s$start)] + indel
+    best_indel <- max(prev_score_indel_vals, na.rm = TRUE)
+
+    # Default to motif continuation
+    prev_score <- prev_score_motif
+    source <- as.character(s$motif_idx)
+
+    # Only use indel if no valid motif continuation exists
+    if (is.infinite(prev_score_motif) && !is.infinite(best_indel)) {
+      prev_score <- best_indel
+      source <- "--"
     }
 
+    # Compute new score for this region
     new_score <- prev_score + score
 
-    if(new_score > DP[s$end + 1]) {
+    # Update DP and traceback
+    if (new_score > DP[s$end + 1]) {
       DP[s$end + 1] <- new_score
-      traceback[s$end + 1] <- if(from_indel) "--" else as.character(s$motif_idx)
+      traceback[s$end + 1] <- source
     }
   }
+  print(traceback)
 
   # Reconstruct composition
   composition <- character()
   pos <- L + 1
-  while(pos > 1) {
-    t <- traceback[pos]
-    if(t == "") break
 
-    if(t == "--") {
+  while (pos > 1) {
+    t <- traceback[pos]
+    if (t == "" || is.na(t)) break
+
+    if (t == "--") {
+      # Indel (gap) — represents missing or unmatched bases
       composition <- c("--", composition)
       pos <- pos - 1
     } else {
+      # Motif match
       m <- as.integer(t)
       k <- width(motifs[m])
       composition <- c(as.character(motifs[m]), composition)
       pos <- pos - k
     }
   }
-
   return(composition)
 }
 
