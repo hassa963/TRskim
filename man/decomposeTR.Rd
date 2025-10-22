@@ -38,6 +38,30 @@ For example, \code{"ATATCAT"} with motif \code{"AT"} is decomposed into
 A function that decomposes an allele into the supplied motifs given either a
 character string or DNAString of the allele
 }
+\examples{
+\dontrun{
+##Example 1
+
+library(Biostrings)
+allele <- DNAString("TTTACACGTAC")
+motifs <- DNAStringSet(c("AC", "GT"))
+composition <- decomposeTR(allele, motifs)
+composition
+
+###Expected: "-"  "-"  "AC" "AC" "GT" "AC"
+}
+
+\dontrun{
+##Example 2
+
+allele <- DNAString("TTTACACGTCAC")
+motifs <- DNAStringSet(c("AC", "GTC"))
+composition <- decomposeTR(allele, motifs)
+composition
+
+###Expected "-"   "-"   "AC"  "AC"  "GTC" "AC"
+}
+}
 \references{
 OpenAI. ChatGPT (GPT-5) large language model (2025).
 https://chat.openai.com/

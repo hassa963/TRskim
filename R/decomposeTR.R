@@ -23,6 +23,29 @@
 #' Each `"-"` represents an indel the length of the preceding motif unit.
 #' For example, `"ATATCAT"` with motif `"AT"` is decomposed into
 #' `c("AT", "AT", "-", "AT")`.
+#' @examples
+#' \dontrun{
+#' ##Example 1
+#'
+#' library(Biostrings)
+#' allele <- DNAString("TTTACACGTAC")
+#' motifs <- DNAStringSet(c("AC", "GT"))
+#' composition <- decomposeTR(allele, motifs)
+#' composition
+#'
+#' ###Expected: "-"  "-"  "AC" "AC" "GT" "AC"
+#' }
+#'
+#' \dontrun{
+#' ##Example 2
+#'
+#' allele <- DNAString("TTTACACGTCAC")
+#' motifs <- DNAStringSet(c("AC", "GTC"))
+#' composition <- decomposeTR(allele, motifs)
+#' composition
+#'
+#' ###Expected "-"   "-"   "AC"  "AC"  "GTC" "AC"
+#'}
 #' @references OpenAI. ChatGPT (GPT-5) large language model (2025).
 #' https://chat.openai.com/
 #'
