@@ -1,4 +1,4 @@
-#' Decomposes allele into motifs
+#' Tandem Repeat Decomposition
 #'
 #' A function that decomposes an allele into the supplied motifs given either a
 #' character string or DNAString of the allele
@@ -10,19 +10,40 @@
 #' @param indel score for if there is an insertion or deletion in sequence by
 #' default this is -1
 #' @param allowence is the number of mismatches between the motif
-#' and the sequence permitted to be still be later encoded as a motif.By default
-#' this is 0
-#' @references OpenAI. (2025). ChatGPT (GPT-5) [Large language model]. https://chat.openai.com/
+#' and the sequence permitted to be still be later encoded as a motif. By
+#' default this is 0
+#' @return This function returns the tandem repeat allele decomposed into its motifs
+#' as a character vector. For example, the allele `"ATATAT"` with motif `"AT"`
+#' is decomposed into `c("AT", "AT", "AT")`.
+#'
+#' If no motifs are found in the allele, the function returns `character(0)`
+#' and prints a message to inform the user.
+#'
+#' Any indels within the repeat are represented as `"-"` in the output vector.
+#' Each `"-"` represents an indel the length of the preceding motif unit.
+#' For example, `"ATATCAT"` with motif `"AT"` is decomposed into
+#' `c("AT", "AT", "-", "AT")`.
+#' @references OpenAI. ChatGPT (GPT-5) large language model (2025).
+#' https://chat.openai.com/
+#'
+#'Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
+#'manipulation of biological strings (R package version 2.77.2, 2025).
+#'https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
+#'
+#' Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
+#' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
+#' Advances 3, (2023).
+#'
 #' @import Biostrings
 #' @export decomposeTR
 
 # DP decomposition with indels
 #assisted by Chat Gpt To translate TRviz algorithm into an R implementation then
-#debugged heavily to allow for proper decomposition
+#debugged heavily to allow for proper decomposition (given a skeleton)
 decomposeTR <- function(allele, motifs, match = 1,
                         indel = -1, allowence = 0) {
-  if (is.character(allele)) allele <- DNAString(allele)
-  if (is.character(motifs)) motifs <- DNAStringSet(motifs)
+  if (is.character(allele)) allele <- DNAString(allele) #from Biostrings
+  if (is.character(motifs)) motifs <- DNAStringSet(motifs) #from Biostrings
 
   L <- length(allele)
   M <- length(motifs)
@@ -34,6 +55,7 @@ decomposeTR <- function(allele, motifs, match = 1,
   # Precompute motif hits
   hits_df <- do.call(rbind, lapply(seq_along(motifs), function(m) {
     hits <- matchPattern(motifs[[m]], allele, max.mismatch = allowence)
+    #matchPattern is from the BioStrings package
     if(length(hits) == 0) return(NULL)
     data.frame(
       start = start(hits),
@@ -90,7 +112,8 @@ score_match_custom <- function(seq1, seq2, match) {
   }
 }
 
-##Used ChatGPT to debug composition reconstruction from traceback
+##Used ChatGPT to debug composition reconstruction from traceback and derived
+#function below
 reconstruct <- function(L, traceback, motifs) {
   composition <- character()
   pos <- L + 1
