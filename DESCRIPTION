@@ -16,5 +16,6 @@ RoxygenNote: 7.3.3
 Imports:
   Biostrings,
   ggplot2,
-  DECIPHER
+  DECIPHER,
+
   
