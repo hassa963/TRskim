@@ -10,7 +10,7 @@ decomposeTR(
   match = 1,
   mis_match = -1,
   indel = -2,
-  allowence = 1
+  allowence = 0
 )
 }
 \arguments{
@@ -29,9 +29,12 @@ default this is -2}
 
 \item{allowence}{is the number of mismatches between the motif
 and the sequence permitted to be still be later encoded as a motif by default
-this is 1}
+this is 0}
 }
 \description{
 A function that decomposes an allele into the supplied motifs given either a
 character string or DNAString of the allele
+}
+\references{
+OpenAI. (2025). ChatGPT (GPT-5) \link{Large language model}. https://chat.openai.com/
 }
