@@ -14,7 +14,7 @@ repeat (ex. "-"  "-"  "AC" "AC" "GT" "AC")}
 }
 \value{
 Returns a list containing the encoded tandem repeat in $encoded and the
-mapping of the motifs to their synbols in $motif_map
+mapping of the motifs to their symbols in $motif_map
 }
 \description{
 A function that encodes a decomposed tandem repeat such that each unique
@@ -22,16 +22,18 @@ motif is a single character symbol
 }
 \examples{
 \dontrun{
+
 decomposed_TR <- c("-", "-", "AC", "AC", "GT", "AC")
 motifs <- c("AC", "GT")
-encodeTR(decomposed_TR, motifs)
+encoded <- encodeTR(decomposed_TR, motifs)
 
-## expected
-#$encoded
-#"--AABA"
-#$map
-#AC  GT   -
-#"A" "B" "-"
+encoded$encoded
+[1] "--AABA"
+
+encoded$map
+ AC  GT   -
+"A" "B" "-"
+
 }
 
 }

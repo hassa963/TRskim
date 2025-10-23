@@ -3,6 +3,7 @@
 export(decomposeTR)
 export(decomposeTRs)
 export(encodeTR)
+export(encodeTRs)
 import(Biostrings)
 importFrom(methods,is)
 importFrom(stats,setNames)
