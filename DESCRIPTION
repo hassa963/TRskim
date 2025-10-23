@@ -17,5 +17,7 @@ Imports:
   Biostrings,
   ggplot2,
   DECIPHER,
+  methods,
+  stats
 
   

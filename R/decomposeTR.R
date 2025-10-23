@@ -33,7 +33,8 @@
 #' composition <- decomposeTR(allele, motifs)
 #' composition
 #'
-#' ###Expected: "-"  "-"  "AC" "AC" "GT" "AC"
+#' ###Expected:
+#' [1] "-"  "-"  "AC" "AC" "GT" "AC"
 #' }
 #'
 #' \dontrun{
@@ -45,6 +46,7 @@
 #' composition
 #'
 #' ###Expected "-"   "-"   "AC"  "AC"  "GTC" "AC"
+#' [1] "-"   "-"   "AC"  "AC"  "GTC" "AC"
 #'}
 #' @references OpenAI. ChatGPT (GPT-5) large language model (2025).
 #' https://chat.openai.com/
@@ -67,6 +69,14 @@ decomposeTR <- function(allele, motifs, match = 1,
                         indel = -1, allowence = 0) {
   if (is.character(allele)) allele <- DNAString(allele) #from Biostrings
   if (is.character(motifs)) motifs <- DNAStringSet(motifs) #from Biostrings
+
+  if(!is(allele, "DNAString")){
+    stop("Alleles should be character string or DNAString")
+  }
+
+  if(!is(motifs, "DNAStringSet")){
+    stop("motifs should be character vector or DNAStringset")
+  }
 
   L <- length(allele)
   M <- length(motifs)
@@ -193,7 +203,86 @@ reconstruct <- function(L, traceback, motifs) {
   return(composition)
 }
 
+#' Decomposition of Tandem Repeats
+#'
+#' A function that decomposes alleles into the supplied motifs given either a
+#' character string vector or DNAStringSet of the alleles
+#'
+#' @param alleles DNAStringSet or character string vector of the Tandem repeats
+#' @param motifs a vector of strings or a DNAStringSet that are the expected
+#' motifs of the Tandem Repeat
+#' @param match score for if motif matches sequence this is by default 1
+#' @param indel score for if there is an insertion or deletion in sequence by
+#' default this is -1
+#' @param allowence is the number of mismatches between the motif
+#' and the sequence permitted to be still be later encoded as a motif. By
+#' default this is 0
+#' @return This function returns the tandem repeat alleles as a vector
+#' decomposed into there motifs as character vectors.
+#' For example, the allele `"ATATAT"` with motif `"AT"` is decomposed
+#' into `c("AT", "AT", "AT")`.
+#'
+#' If no motifs are found in an allele, the function returns `character(0)` for
+#' that allele and prints a message to inform the user.
+#'
+#' Any indels within the repeat are represented as `"-"` in the output vector.
+#' Each `"-"` represents an indel the length of the preceding motif unit.
+#' For example, `"ATATCAT"` with motif `"AT"` is decomposed into
+#' `c("AT", "AT", "-", "AT")`.
+#'
+#' @references
+#'Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
+#'manipulation of biological strings (R package version 2.77.2, 2025).
+#'https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
+#'
+#' Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
+#' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
+#' Advances 3, (2023).
+#' @examples
+#' \dontrun{
+#' ##Example 1
+#'
+#' library(Biostrings)
+#' alleles <- DNAStringSet(c("TTTACACGTAC", "ACACGTAC", "TTACACGTAC" ))
+#' motifs <- DNAStringSet(c("AC", "GT"))
+#' compositions <- decomposeTRs(alleles, motifs)
+#' compositions
+#'
+#' ###Expected:
+#' [[1]]
+#' [1] "-"  "-"  "AC" "AC" "GT" "AC"
+#
+#' [[2]]
+#' [1] "AC" "AC" "GT" "AC"
+#
+#' [[3]]
+#' [1] "-"  "AC" "AC" "GT" "AC"
+#' }
+#'
+#' @import Biostrings
+#' @importFrom methods is
+#' @export decomposeTRs
 
+decomposeTRs <- function(alleles, motifs, match = 1,
+                         indel = -1, allowence = 0) {
+
+  if (is.character(alleles)) alleles <- DNAStringSet(alleles) #from Biostrings
+  if (is.character(motifs)) motifs <- DNAStringSet(motifs)  #from Biostrings
+
+  if(!is(alleles, "DNAStringSet")){
+    stop("Alleles should be character vector or DNAStringset")
+  }
+
+  if(!is(motifs, "DNAStringSet")){
+    stop("Motifs should be character vector or DNAStringset")
+  }
+
+  TRs <- lapply(alleles, function(allele) {
+    decomposeTR(allele, motifs, match, indel, allowence)
+  })
+
+  return(TRs)
+}
 
 
 
