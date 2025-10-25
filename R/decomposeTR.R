@@ -229,9 +229,9 @@ reconstruct <- function(L, traceback, motifs, allele) {
 #'
 #'
 #' @references
-#'Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
-#'manipulation of biological strings (R package version 2.77.2, 2025).
-#'https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
+#' Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
+#' manipulation of biological strings (R package version 2.77.2, 2025).
+#' https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
 #'
 #' Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
 #' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
@@ -289,8 +289,8 @@ decomposeTRs <- function(alleles, motifs, match = 1,
     decomposeTR(allele, motifs, match, indel, allowence)
   })
 
-  all_compositions <- lapply(compositions, `[[`, "composition")
-  all_motifs <- lapply(compositions, `[[`, "motifs")
+  all_compositions <- lapply(TRs, `[[`, "composition")
+  all_motifs <- lapply(TRs, `[[`, "motifs")
   combined_motifs <- unique(do.call(c, all_motifs))
 
   return(list(

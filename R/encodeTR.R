@@ -41,9 +41,8 @@
 #some assistance with AI to create named chacrer vector
 encodeTR <- function(decomposed_TR, motifs){
   motif_chars <- as.character(motifs)
-  symbols <- c(LETTERS, letters,
-               0:9, "!", "@", "#", "$", "%", "&", "*", "+", "-", "=")
-  motif_map <- setNames(all_symbols[seq_along(motif_chars)], motif_chars)
+  symbols <- c(LETTERS, letters, 0:9, "!", "@", "#", "$")
+  motif_map <- setNames(symbols[seq_along(motif_chars)], motif_chars)
   encoded_seq <- paste0(motif_map[decomposed_TR], collapse = "")
 
   return(list(encoded = encoded_seq,
@@ -102,9 +101,8 @@ encodeTRs <- function(decomposed_TRs, motifs) {
   # Create mapping from motif -> symbol
   #used ChatGpt to figure out how to expand motif alphabet
   motif_chars <- as.character(motifs)
-  symbols <- c(LETTERS, letters,
-               0:9, "!", "@", "#", "$", "%", "&", "*", "+", "-", "=")
-  motif_map <- setNames(all_symbols[seq_along(motif_chars)], motif_chars)
+  symbols <- c(LETTERS, letters, 0:9, "!", "@", "#", "$")
+  motif_map <- setNames(symbols[seq_along(motif_chars)], motif_chars)
 
 
 
