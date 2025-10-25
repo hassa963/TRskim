@@ -63,9 +63,9 @@
 #' @references OpenAI. ChatGPT (GPT-5) large language model (2025).
 #' https://chat.openai.com/
 #'
-#'Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
-#'manipulation of biological strings (R package version 2.77.2, 2025).
-#'https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
+#' Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
+#' manipulation of biological strings (R package version 2.77.2, 2025).
+#' https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
 #'
 #' Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
 #' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics

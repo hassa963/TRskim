@@ -14,16 +14,16 @@
 #' @examples
 #' \dontrun{
 #'
-#' decomposed_TR <- c("-", "-", "AC", "AC", "GT", "AC")
+#' decomposed_TR <- c("AC", "AC", "GT", "AC")
 #' motifs <- c("AC", "GT")
 #' encoded <- encodeTR(decomposed_TR, motifs)
 #'
 #' encoded$encoded
-#' [1] "--AABA"
+#' [1] "AABA"
 #'
 #' encoded$map
-#'  AC  GT   -
-#' "A" "B" "-"
+#'  AC  GT
+#' "A" "B"
 #'
 #' }
 #'
@@ -40,12 +40,10 @@
 #emulates how TRviz encodes TRs into motif units for later alignment
 #some assistance with AI to create named chacrer vector
 encodeTR <- function(decomposed_TR, motifs){
-
-  symbols <- LETTERS[seq_along(motifs)]
-  motif_map <- setNames(symbols,motifs) #from stats
-
-  motif_map["-"] <- "-"
-
+  motif_chars <- as.character(motifs)
+  symbols <- c(LETTERS, letters,
+               0:9, "!", "@", "#", "$", "%", "&", "*", "+", "-", "=")
+  motif_map <- setNames(all_symbols[seq_along(motif_chars)], motif_chars)
   encoded_seq <- paste0(motif_map[decomposed_TR], collapse = "")
 
   return(list(encoded = encoded_seq,
@@ -67,23 +65,32 @@ encodeTR <- function(decomposed_TR, motifs){
 #'
 #' @examples
 #' \dontrun{
-#' decomposed_TR1 <- c("-", "-", "AC", "AC", "GT", "AC")
-#' decomposed_TR2 <- c("-", "-", "AC", "GT", "AC")
-#' decomposed_TR3 <- c("-", "-", "AC", "GT", "AC", "GT")
-#' decomposed_TRs <- c(decomposed_TR1, decomposed_TR2, decomposed_TR3)
-#' motifs <- c("AC", "GT")
+#' decomposed_TR1 <- c("TTT", "AC", "AC", "GT", "AC")
+#' decomposed_TR2 <- c("AC", "GT", "AC")
+#' decomposed_TR3 <- c("CC", "AC", "GT", "AC", "GT")
+#' decomposed_TRs <- list(decomposed_TR1, decomposed_TR2, decomposed_TR3)
+#' motifs <- c("AC", "GT", "TTT", "CC")
 #' encoded <- encodeTRs(decomposed_TRs, motifs)
 #' encoded
-#'
 #' $encoded
-#' [1] "--AABA" "--ABA"  "--ABAB"
+#' $encoded[[1]]
+#' [1] "CAABA"
+#'
+#' $encoded[[2]]
+#' [1] "ABA"
+#'
+#' $encoded[[3]]
+#' [1] "DABAB"
+#'
 #'
 #' $map
-#'  AC  GT   -
-#' "A" "B" "-"
+#' AC  GT TTT  CC
+#' "A" "B" "C" "D"
 #' }
 #'
 #' @references
+#' OpenAI. ChatGPT (GPT-5) large language model (2025).https://chat.openai.com/
+#'
 #' Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
 #' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
 #' Advances 3, (2023).
@@ -93,14 +100,18 @@ encodeTR <- function(decomposed_TR, motifs){
 encodeTRs <- function(decomposed_TRs, motifs) {
 
   # Create mapping from motif -> symbol
-  symbols <- LETTERS[seq_along(motifs)]
-  motif_map <- setNames(symbols, motifs)
-  motif_map["-"] <- "-"  # keep gaps as "-"
+  #used ChatGpt to figure out how to expand motif alphabet
+  motif_chars <- as.character(motifs)
+  symbols <- c(LETTERS, letters,
+               0:9, "!", "@", "#", "$", "%", "&", "*", "+", "-", "=")
+  motif_map <- setNames(all_symbols[seq_along(motif_chars)], motif_chars)
 
-  # Encode each decomposed TR
-  encoded <- sapply(decomposed_TRs, function(decomposed_TR) {
-    paste0(motif_map[decomposed_TR], collapse = "")
-  }, USE.NAMES = FALSE)
+
+
+  # Encode each decomposed TR as a single string in a list
+  encoded <- lapply(decomposed_TRs, function(tr) {
+    paste0(motif_map[tr], collapse = "")
+  })
 
   return(list(
     encoded = encoded,
