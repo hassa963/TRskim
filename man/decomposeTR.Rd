@@ -22,17 +22,13 @@ and the sequence permitted to be still be later encoded as a motif. By
 default this is 0}
 }
 \value{
-This function returns the tandem repeat allele decomposed into its motifs
-as a character vector. For example, the allele \code{"ATATAT"} with motif \code{"AT"}
-is decomposed into \code{c("AT", "AT", "AT")}.
+This function returns the tandem repeat allele decomposed into its
+motifs as a character vector. For example, the allele \code{"ATATAT"} with motif
+\code{"AT"} is decomposed into \code{c("AT", "AT", "AT")} as well as an updated motifs
+DNAStringSet consisting of novel motifs detected in the allele.
 
-If no motifs are found in the allele, the function returns \code{character(0)}
-and prints a message to inform the user.
-
-Any indels within the repeat are represented as \code{"-"} in the output vector.
-Each \code{"-"} represents an indel the length of the preceding motif unit.
-For example, \code{"ATATCAT"} with motif \code{"AT"} is decomposed into
-\code{c("AT", "AT", "-", "AT")}.
+If no motifs are found in the allele from the initial motif set,
+the function returns \code{character(0)}and prints a message to inform the user.
 }
 \description{
 A function that decomposes an allele into the supplied motifs given either a
@@ -49,7 +45,15 @@ composition <- decomposeTR(allele, motifs)
 composition
 
 ###Expected:
-[1] "-"  "-"  "AC" "AC" "GT" "AC"
+$composition
+[1] "TTT" "AC"  "AC"  "GT"  "AC"
+
+$motifs
+DNAStringSet object of length 3:
+  width seq
+[1]     2 AC
+[2]     2 GT
+[3]     3 TTT
 }
 
 \dontrun{
@@ -60,8 +64,15 @@ motifs <- DNAStringSet(c("AC", "GTC"))
 composition <- decomposeTR(allele, motifs)
 composition
 
-###Expected "-"   "-"   "AC"  "AC"  "GTC" "AC"
-[1] "-"   "-"   "AC"  "AC"  "GTC" "AC"
+###Expected
+$composition
+[1] "TTT" "AC"  "GTC" "AC"
+$motifs
+DNAStringSet object of length 3:
+  width seq
+[1]     2 AC
+[2]     3 GTC
+[3]     3 TTT
 }
 }
 \references{

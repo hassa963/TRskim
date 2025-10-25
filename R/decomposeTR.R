@@ -12,17 +12,14 @@
 #' @param allowence is the number of mismatches between the motif
 #' and the sequence permitted to be still be later encoded as a motif. By
 #' default this is 0
-#' @return This function returns the tandem repeat allele decomposed into its motifs
-#' as a character vector. For example, the allele `"ATATAT"` with motif `"AT"`
-#' is decomposed into `c("AT", "AT", "AT")`.
+#' @return This function returns the tandem repeat allele decomposed into its
+#' motifs as a character vector. For example, the allele `"ATATAT"` with motif
+#' `"AT"` is decomposed into `c("AT", "AT", "AT")` as well as an updated motifs
+#' DNAStringSet consisting of novel motifs detected in the allele.
 #'
-#' If no motifs are found in the allele, the function returns `character(0)`
-#' and prints a message to inform the user.
+#' If no motifs are found in the allele from the initial motif set,
+#' the function returns `character(0)`and prints a message to inform the user.
 #'
-#' Any indels within the repeat are represented as `"-"` in the output vector.
-#' Each `"-"` represents an indel the length of the preceding motif unit.
-#' For example, `"ATATCAT"` with motif `"AT"` is decomposed into
-#' `c("AT", "AT", "-", "AT")`.
 #' @examples
 #' \dontrun{
 #' ##Example 1
@@ -34,7 +31,15 @@
 #' composition
 #'
 #' ###Expected:
-#' [1] "-"  "-"  "AC" "AC" "GT" "AC"
+#' $composition
+#' [1] "TTT" "AC"  "AC"  "GT"  "AC"
+#'
+#' $motifs
+#' DNAStringSet object of length 3:
+#'   width seq
+#' [1]     2 AC
+#' [2]     2 GT
+#' [3]     3 TTT
 #' }
 #'
 #' \dontrun{
@@ -45,8 +50,15 @@
 #' composition <- decomposeTR(allele, motifs)
 #' composition
 #'
-#' ###Expected "-"   "-"   "AC"  "AC"  "GTC" "AC"
-#' [1] "-"   "-"   "AC"  "AC"  "GTC" "AC"
+#' ###Expected
+#' $composition
+#' [1] "TTT" "AC"  "GTC" "AC"
+#' $motifs
+#' DNAStringSet object of length 3:
+#'   width seq
+#' [1]     2 AC
+#' [2]     3 GTC
+#' [3]     3 TTT
 #'}
 #' @references OpenAI. ChatGPT (GPT-5) large language model (2025).
 #' https://chat.openai.com/
@@ -65,18 +77,13 @@
 # DP decomposition with indels
 #assisted by Chat Gpt To translate TRviz algorithm into an R implementation then
 #debugged heavily to allow for proper decomposition (given a skeleton)
-decomposeTR <- function(allele, motifs, match = 1,
-                        indel = -1, allowence = 0) {
-  if (is.character(allele)) allele <- DNAString(allele) #from Biostrings
-  if (is.character(motifs)) motifs <- DNAStringSet(motifs) #from Biostrings
+decomposeTR <- function(allele, motifs, match = 1, indel = -1, allowence = 0) {
+  # Ensure correct object types
+  if (is.character(allele)) allele <- DNAString(allele)
+  if (is.character(motifs)) motifs <- DNAStringSet(motifs)
 
-  if(!is(allele, "DNAString")){
-    stop("Alleles should be character string or DNAString")
-  }
-
-  if(!is(motifs, "DNAStringSet")){
-    stop("motifs should be character vector or DNAStringset")
-  }
+  if(!is(allele, "DNAString")) stop("allele must be DNAString or character")
+  if(!is(motifs, "DNAStringSet")) stop("motifs must be DNAStringSet or character vector")
 
   L <- length(allele)
   M <- length(motifs)
@@ -88,8 +95,7 @@ decomposeTR <- function(allele, motifs, match = 1,
   # Precompute motif hits
   hits_df <- do.call(rbind, lapply(seq_along(motifs), function(m) {
     hits <- matchPattern(motifs[[m]], allele, max.mismatch = allowence)
-    #matchPattern is from the BioStrings package
-    if(length(hits) == 0) return(NULL)
+    if (length(hits) == 0) return(NULL)
     data.frame(
       start = start(hits),
       end = end(hits),
@@ -104,9 +110,9 @@ decomposeTR <- function(allele, motifs, match = 1,
 
   hits_df <- hits_df[order(hits_df$start), ]
 
-  # Fill DP
+  # Fill DP table
   for(pos in 1:L) {
-    # Indel: gap of 1 base
+    # Gap/indel
     if(DP[pos] != -Inf && pos + 1 <= L + 1) {
       score_gap <- DP[pos] + indel
       if(score_gap > DP[pos + 1]) {
@@ -115,24 +121,31 @@ decomposeTR <- function(allele, motifs, match = 1,
       }
     }
 
-    # Motif hits starting at this position
+    # Motif hits
     hits_here <- hits_df[hits_df$start == pos, , drop = FALSE]
     for(i in seq_len(nrow(hits_here))) {
-
       s <- hits_here[i, ]
       motif_seq <- as.character(motifs[[s$motif_idx]])
       subseq_allele <- as.character(subseq(allele, s$start, s$end))
-      score <- sum(score_match_custom(subseq_allele, motif_seq, match))
+      score <- if(identical(subseq_allele, motif_seq)) match else 0
       new_score <- DP[pos] + score
-
       if(new_score > DP[s$end + 1]) {
         DP[s$end + 1] <- new_score
         traceback[s$end + 1] <- as.character(s$motif_idx)
       }
     }
   }
-  composition <- reconstruct(L, traceback, motifs)
-  return(composition)
+
+  # Reconstruct sequence with insertions preserved
+  composition <- reconstruct(L, traceback, motifs, allele)
+
+  new_motifs <- setdiff(composition, motifs)
+  motifs <- c(motifs, DNAStringSet(new_motifs))
+
+  return(list(
+    composition = composition,
+    motifs = motifs
+  ))
 }
 
 ### helpers ####
@@ -147,43 +160,25 @@ score_match_custom <- function(seq1, seq2, match) {
 
 ##Used ChatGPT to debug composition reconstruction from traceback and derived
 #function below
-reconstruct <- function(L, traceback, motifs) {
+reconstruct <- function(L, traceback, motifs, allele) {
   composition <- character()
   pos <- L + 1
 
-  while (pos > 1) {
+  while(pos > 1) {
     t <- traceback[pos]
     if (is.na(t)) break
 
     if (t == "-") {
-      # Find next motif position before the current gap
-      next_motif_pos <- which(!is.na(traceback[1:(pos - 1)]) & traceback[1:(pos - 1)] != "-")
+      # Find previous motif position
+      prev_motif_pos <- which(!is.na(traceback[1:(pos - 1)]) & traceback[1:(pos - 1)] != "-")
+      next_pos <- if(length(prev_motif_pos) == 0) 1 else max(prev_motif_pos)
 
-      if (length(next_motif_pos) == 0) {
-        # Leading gap: use first motif length
-        k <- width(motifs[1])
-        next_pos <- 1
-      } else {
-        next_pos <- max(next_motif_pos)
-        t_next <- traceback[next_pos]
-        if (is.na(t_next) || t_next == "-") {
-          k <- 1
-        } else {
-          # Safely convert and check index
-          motif_idx <- suppressWarnings(as.integer(t_next))
-          if (is.na(motif_idx) || motif_idx > length(motifs)) {
-            k <- 1
-          } else {
-            k <- width(motifs[motif_idx])
-          }
-        }
+      if(next_pos < pos) {
+        gap_seq <- as.character(subseq(allele, next_pos, pos - 1))
+
+        composition <- c(gap_seq, composition)
       }
-
-      # Compute gap length in bases
-      gap_len <- pos - next_pos
-      n_units <- ceiling(gap_len / k)
-      composition <- c(rep("-", n_units), composition)
-      pos <- pos - gap_len
+      pos <- next_pos
 
     } else {
       # Motif match
@@ -193,12 +188,18 @@ reconstruct <- function(L, traceback, motifs) {
         composition <- c(as.character(motifs[motif_idx]), composition)
         pos <- pos - k
       } else {
-        # Fallback for corrupted traceback entries
+        # fallback
         composition <- c("-", composition)
         pos <- pos - 1
       }
     }
   }
+
+  # Trailing insertion
+  if(pos <= length(allele)) {
+    trailing_seq <- as.character(subseq(allele, pos, length(allele)))
+  }
+
 
   return(composition)
 }
@@ -220,15 +221,12 @@ reconstruct <- function(L, traceback, motifs) {
 #' @return This function returns the tandem repeat alleles as a vector
 #' decomposed into there motifs as character vectors.
 #' For example, the allele `"ATATAT"` with motif `"AT"` is decomposed
-#' into `c("AT", "AT", "AT")`.
+#' into `c("AT", "AT", "AT")`. And an updated DNAStringSet of mptifs containing
+#' motifs across all alleles.
 #'
 #' If no motifs are found in an allele, the function returns `character(0)` for
 #' that allele and prints a message to inform the user.
 #'
-#' Any indels within the repeat are represented as `"-"` in the output vector.
-#' Each `"-"` represents an indel the length of the preceding motif unit.
-#' For example, `"ATATCAT"` with motif `"AT"` is decomposed into
-#' `c("AT", "AT", "-", "AT")`.
 #'
 #' @references
 #'Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
@@ -249,14 +247,24 @@ reconstruct <- function(L, traceback, motifs) {
 #' compositions
 #'
 #' ###Expected:
-#' [[1]]
-#' [1] "-"  "-"  "AC" "AC" "GT" "AC"
-#
-#' [[2]]
+#' $compositions
+#' $compositions[[1]]
+#' [1] "TTT" "AC"  "AC"  "GT"  "AC"
+#'
+#' $compositions[[2]]
 #' [1] "AC" "AC" "GT" "AC"
-#
-#' [[3]]
-#' [1] "-"  "AC" "AC" "GT" "AC"
+#'
+#' $compositions[[3]]
+#' [1] "TT" "AC" "AC" "GT" "AC"
+#'
+#'
+#' $motifs
+#' DNAStringSet object of length 4:
+#'   width seq
+#' [1]     2 AC
+#' [2]     2 GT
+#' [3]     3 TTT
+#' [4]     2 TT
 #' }
 #'
 #' @import Biostrings
@@ -281,7 +289,14 @@ decomposeTRs <- function(alleles, motifs, match = 1,
     decomposeTR(allele, motifs, match, indel, allowence)
   })
 
-  return(TRs)
+  all_compositions <- lapply(compositions, `[[`, "composition")
+  all_motifs <- lapply(compositions, `[[`, "motifs")
+  combined_motifs <- unique(do.call(c, all_motifs))
+
+  return(list(
+    compositions = all_compositions,
+    motifs = combined_motifs
+  ))
 }
 
 

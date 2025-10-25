@@ -25,15 +25,11 @@ default this is 0}
 This function returns the tandem repeat alleles as a vector
 decomposed into there motifs as character vectors.
 For example, the allele \code{"ATATAT"} with motif \code{"AT"} is decomposed
-into \code{c("AT", "AT", "AT")}.
+into \code{c("AT", "AT", "AT")}. And an updated DNAStringSet of mptifs containing
+motifs across all alleles.
 
 If no motifs are found in an allele, the function returns \code{character(0)} for
 that allele and prints a message to inform the user.
-
-Any indels within the repeat are represented as \code{"-"} in the output vector.
-Each \code{"-"} represents an indel the length of the preceding motif unit.
-For example, \code{"ATATCAT"} with motif \code{"AT"} is decomposed into
-\code{c("AT", "AT", "-", "AT")}.
 }
 \description{
 A function that decomposes alleles into the supplied motifs given either a
@@ -50,12 +46,24 @@ compositions <- decomposeTRs(alleles, motifs)
 compositions
 
 ###Expected:
-[[1]]
-[1] "-"  "-"  "AC" "AC" "GT" "AC"
-[[2]]
+$compositions
+$compositions[[1]]
+[1] "TTT" "AC"  "AC"  "GT"  "AC"
+
+$compositions[[2]]
 [1] "AC" "AC" "GT" "AC"
-[[3]]
-[1] "-"  "AC" "AC" "GT" "AC"
+
+$compositions[[3]]
+[1] "TT" "AC" "AC" "GT" "AC"
+
+
+$motifs
+DNAStringSet object of length 4:
+  width seq
+[1]     2 AC
+[2]     2 GT
+[3]     3 TTT
+[4]     2 TT
 }
 
 }
