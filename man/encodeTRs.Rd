@@ -22,24 +22,33 @@ motif is a single character symbol
 }
 \examples{
 \dontrun{
-decomposed_TR1 <- c("-", "-", "AC", "AC", "GT", "AC")
-decomposed_TR2 <- c("-", "-", "AC", "GT", "AC")
-decomposed_TR3 <- c("-", "-", "AC", "GT", "AC", "GT")
-decomposed_TRs <- c(decomposed_TR1, decomposed_TR2, decomposed_TR3)
-motifs <- c("AC", "GT")
+decomposed_TR1 <- c("TTT", "AC", "AC", "GT", "AC")
+decomposed_TR2 <- c("AC", "GT", "AC")
+decomposed_TR3 <- c("CC", "AC", "GT", "AC", "GT")
+decomposed_TRs <- list(decomposed_TR1, decomposed_TR2, decomposed_TR3)
+motifs <- c("AC", "GT", "TTT", "CC")
 encoded <- encodeTRs(decomposed_TRs, motifs)
 encoded
-
 $encoded
-[1] "--AABA" "--ABA"  "--ABAB"
+$encoded[[1]]
+[1] "CAABA"
+
+$encoded[[2]]
+[1] "ABA"
+
+$encoded[[3]]
+[1] "DABAB"
+
 
 $map
- AC  GT   -
-"A" "B" "-"
+AC  GT TTT  CC
+"A" "B" "C" "D"
 }
 
 }
 \references{
+OpenAI. ChatGPT (GPT-5) large language model (2025).https://chat.openai.com/
+
 Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
 for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
 Advances 3, (2023).

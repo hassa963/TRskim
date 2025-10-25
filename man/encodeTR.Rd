@@ -23,16 +23,16 @@ motif is a single character symbol
 \examples{
 \dontrun{
 
-decomposed_TR <- c("-", "-", "AC", "AC", "GT", "AC")
+decomposed_TR <- c("AC", "AC", "GT", "AC")
 motifs <- c("AC", "GT")
 encoded <- encodeTR(decomposed_TR, motifs)
 
 encoded$encoded
-[1] "--AABA"
+[1] "AABA"
 
 encoded$map
- AC  GT   -
-"A" "B" "-"
+ AC  GT
+"A" "B"
 
 }
 
