@@ -66,20 +66,22 @@ The package also contains DNAstringSets of tandem repeats and motifs,
 called SOL1 and motifs_SOL1. Refer to package vignette for more details.
 Overview of the package is shown below.
 
-![](./inst/extdata/TRskim_Overview.png) \## Contributions The author of
-TRskim is Nour Hassan. TRskim contains 6 functions. All of which were
-written by the author and utilizes functions from other packages. The
-algorithm for decomposing the tandem repeats in `decomposeTR` is based
-on the algorithm from a python library called TRviz (Park et al., 2023),
-and ChatGPT was used to dissect said algorithm and create a skeleton for
-how to implement something similar in R. The function also utilizes
-`Biostrings` by taking in `DNAString`s and `DNAStringSet`s and the
-function `matchPattern()` to identify where the motifs match in the
-allele. For `alignTRs`, ChatGPT was used to dissecting logic for
-aligning tandem repeats by motif. For `plotTR`, the ggplot function was
-used to generate a tile plot visualization of the tandem repeats.
-ChatGPT was also used to debug code for all the functions and decipher
-how to generate visualization for the `plotTR` function.
+![](./inst/extdata/TRskim_Overview.png) \## Contributions
+
+The author of TRskim is Nour Hassan. TRskim contains 6 functions. All of
+which were written by the author and utilizes functions from other
+packages. The algorithm for decomposing the tandem repeats in
+`decomposeTR` is based on the algorithm from a python library called
+TRviz (Park et al., 2023), and ChatGPT was used to dissect said
+algorithm and create a skeleton for how to implement something similar
+in R. The function also utilizes `Biostrings` by taking in `DNAString`s
+and `DNAStringSet`s and the function `matchPattern()` to identify where
+the motifs match in the allele. For `alignTRs`, ChatGPT was used to
+dissecting logic for aligning tandem repeats by motif. For `plotTR`, the
+ggplot function was used to generate a tile plot visualization of the
+tandem repeats. ChatGPT was also used to debug code for all the
+functions and decipher how to generate visualization for the `plotTR`
+function.
 
 ## References
 

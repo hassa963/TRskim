@@ -74,6 +74,7 @@ the package is shown below.
 
 ![](./inst/extdata/TRskim_Overview.png)
 ## Contributions
+
 The author of TRskim is Nour Hassan. TRskim contains 6 functions. All of which 
 were written by the author and utilizes functions from other packages. The 
 algorithm for decomposing the tandem repeats in `decomposeTR` is based on the 
