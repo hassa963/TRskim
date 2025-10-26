@@ -43,7 +43,8 @@ alignTRs <- function(encoded_trs){
 
     # Update all previously aligned sequences to include new gaps
     for(i in seq_along(aligned_seqs)){
-      aligned_seqs[[i]] <- insert_gaps(aligned_seqs[[i]], new_aln$seq1, aligned_seqs[[1]])
+      aligned_seqs[[i]] <- insert_gaps(aligned_seqs[[i]], new_aln$seq1,
+                                       aligned_seqs[[1]])
     }
 
     # Add the new aligned sequence
@@ -66,8 +67,8 @@ score <- function(a, b) {
   return(-1)
 }
 
-### was given a skeleton to perform multiple sequence alignmentfrom chat GPT and
-#then filled it in
+### was given a skeleton to perform multiple sequence alignment from chat GPT
+#and then filled it in
 align_pair <- function(seq1, seq2) {
   n <- length(seq1)
   m <- length(seq2)
