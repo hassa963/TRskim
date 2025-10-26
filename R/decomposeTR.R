@@ -96,12 +96,20 @@ decomposeTR <- function(allele, motifs, match = 1, indel = -1, allowence = 0) {
   hits_df <- do.call(rbind, lapply(seq_along(motifs), function(m) {
     hits <- matchPattern(motifs[[m]], allele, max.mismatch = allowence)
     if (length(hits) == 0) return(NULL)
-    data.frame(
+
+    df <- data.frame(
       start = start(hits),
       end = end(hits),
       motif_idx = m
     )
+
+    # Filter invalid coordinates
+    df <- df[df$start >= 1 & df$end <= length(allele) & df$start <= df$end, , drop = FALSE]
+    if (nrow(df) == 0) return(NULL)
+
+    df
   }))
+
 
   if (is.null(hits_df) || nrow(hits_df) == 0) {
     message("No motif matches found in allele.")
@@ -229,6 +237,7 @@ reconstruct <- function(L, traceback, motifs, allele) {
 #'
 #'
 #' @references
+#'
 #' Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
 #' manipulation of biological strings (R package version 2.77.2, 2025).
 #' https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
@@ -236,6 +245,11 @@ reconstruct <- function(L, traceback, motifs, allele) {
 #' Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
 #' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
 #' Advances 3, (2023).
+#'
+#' R Core Team. R: A Language and Environment for Statistical Computing. Vienna,
+#' Austria: R Foundation for Statistical Computing (2025).
+#' https://www.R-project.org/
+#'
 #' @examples
 #' \dontrun{
 #' ##Example 1

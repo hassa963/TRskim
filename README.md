@@ -80,10 +80,10 @@ in R. The function also utilizes `Biostrings` by taking in `DNAString`s
 and `DNAStringSet`s and the function `matchPattern()` to identify where
 the motifs match in the allele. For `alignTRs`, ChatGPT was used to
 dissecting logic for aligning tandem repeats by motif. For `plotTR`, the
-ggplot function was used to generate a tile plot visualization of the
-tandem repeats. ChatGPT was also used to debug code for all the
-functions and decipher how to generate visualization for the `plotTR`
-function.
+ggplot function from `ggplot2`was used to generate a tile plot
+visualization of the tandem repeats and `reshape2` was used to format
+the dataframe. ChatGPT was also used to debug code for all the functions
+and decipher how to generate visualization for the `plotTR` function.
 
 ## References
 
@@ -107,6 +107,10 @@ function.
 
 - Wickham, H. Reshaping data with the reshape package. J. Stat. Softw.
   21, 1–20 (2007).
+
+- R Core Team. R: A Language and Environment for Statistical Computing.
+  Vienna Austria: R Foundation for Statistical Computing (2025).
+  <https://www.R-project.org/>
 
 ## Acknowledgements
 

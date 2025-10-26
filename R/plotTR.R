@@ -31,7 +31,6 @@
 #'
 #' @import ggplot2
 #' @import reshape2
-#' @import RColorBrewer
 #' @export plotTR
 
 # Plot
@@ -58,10 +57,8 @@ plotTR <- function(aln_matrix, motif_map) {
     # Convert position to numeric (extract digits)
     df_long$Position <- as.integer(gsub("\\D", "", df_long$Position))
 
-    # Define color palette
     motifs <- unique(df_long$Motif)
-    palette <- RColorBrewer::brewer.pal(max(3, min(length(motifs), 8)), "Set2")
-    motif_colors <- setNames(rep(palette, length.out = length(motifs)), motifs)
+    motif_colors <- setNames(grDevices::rainbow(length(motifs)), motifs)
     motif_colors["-"] <- "grey90"
 
     # Build motif legend labels
@@ -83,15 +80,16 @@ plotTR <- function(aln_matrix, motif_map) {
         labels = motif_labels,
         drop = FALSE
       ) +
-      scale_y_discrete(limits = rev) +
-      theme_minimal(base_size = 14) +
+      theme_minimal(base_size = 6) +
       theme(
         panel.grid = element_blank(),
         legend.title = element_blank(),
         legend.position = "bottom",
-        axis.title.x = element_text(size = 14, face = "bold"),
-        axis.title.y = element_text(size = 14, face = "bold"),
-        plot.title = element_text(size = 16, face = "bold", hjust = 0.5)
+        axis.title.x = element_text(size = 6, face = "bold"),
+        axis.title.y = element_text(size = 6, face = "bold"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
       ) +
       labs(title = "Tandem Repeat Alignment", x = "Position", y = "Alleles")
 
