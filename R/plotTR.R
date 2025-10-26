@@ -7,6 +7,7 @@
 #' motifs
 #'
 #' @return a tile graph showing the motif compositions/alignments of the alleles
+#' containg a legend for the different motifs and grew for the indels ("-").
 #'
 #' @examples
 #' \dontrun{
@@ -55,7 +56,7 @@ plotTR <- function(aln_matrix, motif_map) {
                               value.name = "Motif")
 
     # Convert position to numeric (extract digits)
-    df_long$Position <- as.numeric(gsub("\\D", "", df_long$Position))
+    df_long$Position <- as.integer(gsub("\\D", "", df_long$Position))
 
     # Define color palette
     motifs <- unique(df_long$Motif)
@@ -64,20 +65,21 @@ plotTR <- function(aln_matrix, motif_map) {
     motif_colors["-"] <- "grey90"
 
     # Build motif legend labels
-    motif_labels <- if (!is.null(motif_map)) {
-      paste0(names(motif_map), " = ", motif_map)
-    } else {
-      motifs
-    }
-    names(motif_labels) <- names(motif_map)
+    motif_labels <- sapply(names(motif_colors), function(x) {
+      if (x %in% motif_map) {
+        names(motif_map)[motif_map == x]  # map encoded letter -> actual motif
+      } else {
+        x  # for gaps "-" or any unmapped symbol
+      }
+    })
 
     # Plot
-    ggplot(df_long, aes(x = Position, y = df_long$TR, fill = df_long$Motif,
-                        label = df_long$Motif)) +
+    ggplot(df_long, aes(x = Position, y = TR, fill = Motif,
+                        label = Motif)) +
       geom_tile(color = "white", size = 0.4) +
       scale_fill_manual(
         values = motif_colors,
-        breaks = names(motif_map),
+        breaks = names(motif_colors),
         labels = motif_labels,
         drop = FALSE
       ) +

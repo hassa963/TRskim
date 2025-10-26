@@ -14,6 +14,7 @@ motifs}
 }
 \value{
 a tile graph showing the motif compositions/alignments of the alleles
+containg a legend for the different motifs and grew for the indels ("-").
 }
 \description{
 Visualizes an aligned tandem repeat matrix as a colored tile graph.
