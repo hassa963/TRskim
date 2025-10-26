@@ -66,7 +66,9 @@ The package also contains DNAstringSets of tandem repeats and motifs,
 called SOL1 and motifs_SOL1. Refer to package vignette for more details.
 Overview of the package is shown below.
 
-![](./inst/extdata/TRskim_Overview.png) \## Contributions
+![](./inst/extdata/TRskim_Overview.png)
+
+## Contributions
 
 The author of TRskim is Nour Hassan. TRskim contains 6 functions. All of
 which were written by the author and utilizes functions from other
