@@ -87,6 +87,9 @@ function.
 
 ## References
 
+- BioRender.com. BioRender \[Online\]. Available at:
+  <https://www.biorender.com> (accessed 26 October 2025).
+
 - OpenAI. ChatGPT (GPT-5) large language model (2025).
   <https://chat.openai.com/>
 

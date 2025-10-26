@@ -91,6 +91,9 @@ generate visualization for the `plotTR` function.
 
 ## References 
 
+- BioRender.com. BioRender [Online]. Available at: https://www.biorender.com
+  (accessed 26 October 2025).
+  
 - OpenAI. ChatGPT (GPT-5) large language model (2025). https://chat.openai.com/
 
 - Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
@@ -106,7 +109,7 @@ generate visualization for the `plotTR` function.
 
 - Wickham, H. Reshaping data with the reshape package. J. Stat.
   Softw. 21, 1–20 (2007).
-
+  
 ## Acknowledgements 
 
 This package was developed as part of an assessment for 2025 BCB410H: 
