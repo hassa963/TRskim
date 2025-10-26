@@ -9,7 +9,7 @@
 
 A tandem repeat visualizer.
 
-\##Description
+## Description
 
 `TRskim` is an R package that visualizes tandem repeat composition by
 decomposing sequences into known/novel motifs, encoding then aligning
@@ -66,7 +66,7 @@ The package also contains DNAstringSets of tandem repeats and motifs,
 called SOL1 and motifs_SOL1. Refer to package vignette for more details.
 Overview of the package is shown below.
 
-![](./inst/extdata/TRskim_Overview.png) \##Contributions The author of
+![](./inst/extdata/TRskim_Overview.png) \## Contributions The author of
 TRskim is Nour Hassan. TRskim contains 6 functions. All of which were
 written by the author and utilizes functions from other packages. The
 algorithm for decomposing the tandem repeats in `decomposeTR` is based
@@ -81,7 +81,7 @@ used to generate a tile plot visualization of the tandem repeats.
 ChatGPT was also used to debug code for all the functions and decipher
 how to generate visualization for the `plotTR` function.
 
-\##References
+## References
 
 - OpenAI. ChatGPT (GPT-5) large language model (2025).
   <https://chat.openai.com/>
@@ -101,7 +101,7 @@ how to generate visualization for the `plotTR` function.
 - Wickham, H. Reshaping data with the reshape package. J. Stat. Softw.
   21, 1–20 (2007).
 
-\##Acknowledgements
+## Acknowledgements
 
 This package was developed as part of an assessment for 2025 BCB410H:
 Applied Bioinformatics course at the University of Toronto, Toronto,
