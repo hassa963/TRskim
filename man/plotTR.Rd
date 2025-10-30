@@ -19,7 +19,7 @@ it is a large number of motifs}
 a tile graph showing the motif compositions/alignments of the alleles
 containg a legend for the different motifs and grew for the indels ("-"). If
 large is true it will return the plot in $plot and an object containing the
-legend which can be view with \code{grid.draw()}
+legend which can be viewed with \code{grid.newpage()} and \code{grid.draw()}
 }
 \description{
 Visualizes an aligned tandem repeat matrix as a colored tile graph.
