@@ -11,7 +11,7 @@
 #' @return a tile graph showing the motif compositions/alignments of the alleles
 #' containg a legend for the different motifs and grew for the indels ("-"). If
 #' large is true it will return the plot in $plot and an object containing the
-#' legend which can be view with `grid.draw()`
+#' legend which can be viewed with `grid.newpage()` and `grid.draw()`
 #'
 #' @examples
 #' \dontrun{
@@ -87,8 +87,7 @@ plotTR <- function(aln_matrix, motif_map, large = FALSE) {
         values = motif_colors,
         breaks = names(motif_colors),
         labels = motif_labels,
-        drop = FALSE,
-        guide = guide_legend(ncol = 1)
+        drop = FALSE
       ) +
       theme_minimal(base_size = 6) +
       theme(
