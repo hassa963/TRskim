@@ -20,6 +20,7 @@ Imports:
   ggplot2,
   reshape2,
   methods,
+  cowplot,
   stats
 Suggests: 
     knitr,
