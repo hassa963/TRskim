@@ -75,4 +75,8 @@ https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
 Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
 for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
 Advances 3, (2023).
+
+R Core Team. R: A Language and Environment for Statistical Computing. Vienna,
+Austria: R Foundation for Statistical Computing (2025).
+https://www.R-project.org/
 }

@@ -71,8 +71,9 @@ plotTR <- function(aln_matrix, motif_map) {
     })
 
     # Plot
-    ggplot(df_long, aes(x = Position, y = TR, fill = Motif,
-                        label = Motif)) +
+    ggplot(df_long, aes(x = df_long$Position, y = df_long$TR,
+                        fill = df_long$Motif,
+                        label = df_long$Motif)) +
       geom_tile(color = "white", size = 0.4) +
       scale_fill_manual(
         values = motif_colors,
