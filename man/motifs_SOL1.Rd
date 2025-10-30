@@ -3,7 +3,7 @@
 \docType{data}
 \name{motifs_SOL1}
 \alias{motifs_SOL1}
-\title{DNASet containing 36 Motifs}
+\title{DNAStringSet containing 36 Motifs}
 \format{
 A DNASet with 36 motif sequences
 }
@@ -19,6 +19,11 @@ Advances 3, (2023).
 motifs_SOL1
 }
 \description{
-DNASet containing 36 motifs that are in the tandem repeat SOL1
+DNAStringSet containing 36 motifs that are in the tandem repeat SOL1
+}
+\examples{
+\dontrun{
+motifs_SOL1}
+
 }
 \keyword{datasets}

@@ -5,7 +5,7 @@
 \alias{SOL1}
 \title{SOL1 tandem Repeat alleles}
 \format{
-A DNASet with 95 alleles
+A DNAStringSet with 95 alleles
 }
 \source{
 TRviz example data

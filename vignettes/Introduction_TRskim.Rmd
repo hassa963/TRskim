@@ -1,0 +1,84 @@
+---
+title: "Introduction_TRskim"
+author: "Nour Hassan"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction_TRskim}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+## Introduction 
+
+**TRskim** is an R package for tandem repeat visualization 
+
+To download **TRskim**, use the following commands:
+
+```{r}
+require("devtools")
+devtools::install_github("hassa963/TRskim", build_vignettes = TRUE)
+library("TRskim")
+```
+
+To list all functions available in the package:
+
+```{r}
+ls("package:TRskim")
+```
+## Decompose Tandem Repeats
+
+The function **decomposeTRs** decomposes the alleles into the given motifs and 
+adds new motifs based onn the gaps between the motifs across the alleles.
+
+```{r}
+decomposed <- decomposeTRs(SOL1, motifs_SOL1) 
+
+decomposed_TRs <- decomposed$compositions
+motifs <- decomposed$motifs 
+
+# SOL1 is a provided DNAStringSet of 95 Tandem repeat alleles for more details: 
+# ?SOL1
+# motifs_SOL1 is a provided DNAStringSet of 36 motif sequences within the SOL1 
+# alleles for more details:
+# ?motifs_SOL1
+
+```
+
+## Encode Tandem Repeats
+
+The function **encodeTRs** encodes the decompose alleles into one character 
+symbols which allows the alleles to be aligned based on its motifs not the 
+individual bases. 
+
+```{r}
+encoded <- encodeTRs(decomposed_TRs, motifs)
+
+encoded_TRs <- encoded$encoded
+motif_maps <- encoded$map
+
+```
+
+## Align Tandem Repeats
+
+The function **alignTRs** is a function that uses progressive alignment to align 
+the tandem repeats my their motif composition
+
+```{r}
+aligned_TRs <- alignTRs(encoded_TRs)
+```
+
+## Plot Tandem Repeats 
+
+The function **plotTR** is a function that uses the aligned tandem repeats to 
+produce a tile plot visualization of the alleles 
+
+```{r, fig.width=10, fig.height=6, out.width="100%"}
+results <- plotTR(aligned_TRs, motif_maps, large = TRUE)
+```

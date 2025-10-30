@@ -102,15 +102,19 @@ and decipher how to generate visualization for the `plotTR` function.
   Library for decomposing and Visualizing Tandem Repeat Sequences.
   Bioinformatics Advances 3, (2023).
 
+- R Core Team. R: A Language and Environment for Statistical Computing.
+  Vienna Austria: R Foundation for Statistical Computing (2025).
+  <https://www.R-project.org/>
+
 - Wickham, H. ggplot2: Elegant Graphics for Data Analysis.
   Springer-Verlag, New York, 2016
 
 - Wickham, H. Reshaping data with the reshape package. J. Stat. Softw.
   21, 1–20 (2007).
 
-- R Core Team. R: A Language and Environment for Statistical Computing.
-  Vienna Austria: R Foundation for Statistical Computing (2025).
-  <https://www.R-project.org/>
+- Wilke, C. cowplot: Streamlined Plot Theme and Plot Annotations for
+  ggplot2. R package version 1.2.0,
+  <https://CRAN.R-project.org/package=cowplot> (2025)
 
 ## Acknowledgements
 

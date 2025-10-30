@@ -5,9 +5,13 @@
 #' @param aln_matrix A character matrix returned by alignTRs
 #' @param motif_map A named character vector where the names are different
 #' motifs
+#' @param large A boolean value that makes the legend separate from the plot if
+#' it is a large number of motifs
 #'
 #' @return a tile graph showing the motif compositions/alignments of the alleles
-#' containg a legend for the different motifs and grew for the indels ("-").
+#' containg a legend for the different motifs and grew for the indels ("-"). If
+#' large is true it will return the plot in $plot and an object containing the
+#' legend which can be view with `grid.draw()`
 #'
 #' @examples
 #' \dontrun{
@@ -29,13 +33,17 @@
 #' Wickham, H. Reshaping data with the reshape package. J. Stat.
 #' Softw. 21, 1–20 (2007).
 #'
+#' Wilke, C. cowplot: Streamlined Plot Theme and Plot Annotations for ggplot2.
+#' R package version 1.2.0, https://CRAN.R-project.org/package=cowplot (2025)
+#'
 #' @import ggplot2
 #' @import reshape2
+#' @import cowplot
 #' @export plotTR
 
 # Plot
 #the dataframe formating was assisted by chatgpt
-plotTR <- function(aln_matrix, motif_map) {
+plotTR <- function(aln_matrix, motif_map, large = FALSE) {
     # Ensure input is a matrix
     aln_matrix <- as.matrix(aln_matrix)
 
@@ -71,15 +79,16 @@ plotTR <- function(aln_matrix, motif_map) {
     })
 
     # Plot
-    ggplot(df_long, aes(x = df_long$Position, y = df_long$TR,
-                        fill = df_long$Motif,
-                        label = df_long$Motif)) +
+    plot <- ggplot(df_long, aes(x = df_long$Position, y = df_long$TR,
+                                fill = df_long$Motif,
+                                label = df_long$Motif)) +
       geom_tile(color = "white", size = 0.4) +
       scale_fill_manual(
         values = motif_colors,
         breaks = names(motif_colors),
         labels = motif_labels,
-        drop = FALSE
+        drop = FALSE,
+        guide = guide_legend(ncol = 1)
       ) +
       theme_minimal(base_size = 6) +
       theme(
@@ -93,6 +102,19 @@ plotTR <- function(aln_matrix, motif_map) {
         plot.title = element_text(size = 8, face = "bold", hjust = 0.5)
       ) +
       labs(title = "Tandem Repeat Alignment", x = "Position", y = "Alleles")
+
+    if( large ){
+      p_no_legend <- plot + theme(legend.position = "none")
+
+      legend_only <- get_legend(plot)
+
+      return(list(plot = p_no_legend, legend = legend_only))
+    }
+
+    else{
+      return(plot)
+    }
+
 
   }
 

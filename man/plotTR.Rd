@@ -4,17 +4,22 @@
 \alias{plotTR}
 \title{Plot a Tandem Repeat Alignment}
 \usage{
-plotTR(aln_matrix, motif_map)
+plotTR(aln_matrix, motif_map, large = FALSE)
 }
 \arguments{
 \item{aln_matrix}{A character matrix returned by alignTRs}
 
 \item{motif_map}{A named character vector where the names are different
 motifs}
+
+\item{large}{A boolean value that makes the legend separate from the plot if
+it is a large number of motifs}
 }
 \value{
 a tile graph showing the motif compositions/alignments of the alleles
-containg a legend for the different motifs and grew for the indels ("-").
+containg a legend for the different motifs and grew for the indels ("-"). If
+large is true it will return the plot in $plot and an object containing the
+legend which can be view with \code{grid.draw()}
 }
 \description{
 Visualizes an aligned tandem repeat matrix as a colored tile graph.
@@ -40,4 +45,7 @@ New York, 2016.
 
 Wickham, H. Reshaping data with the reshape package. J. Stat.
 Softw. 21, 1–20 (2007).
+
+Wilke, C. cowplot: Streamlined Plot Theme and Plot Annotations for ggplot2.
+R package version 1.2.0, https://CRAN.R-project.org/package=cowplot (2025)
 }
