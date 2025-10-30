@@ -82,8 +82,10 @@ the motifs match in the allele. For `alignTRs`, ChatGPT was used to
 dissecting logic for aligning tandem repeats by motif. For `plotTR`, the
 ggplot function from `ggplot2`was used to generate a tile plot
 visualization of the tandem repeats and `reshape2` was used to format
-the dataframe. ChatGPT was also used to debug code for all the functions
-and decipher how to generate visualization for the `plotTR` function.
+the dataframe. `cowplot` was also used to remove the legend from the
+plot for large data.ChatGPT was also used to debug code for all the
+functions and decipher how to generate visualization for the `plotTR`
+function.
 
 ## References
 
