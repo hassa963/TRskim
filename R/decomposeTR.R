@@ -52,7 +52,7 @@
 #'
 #' ###Expected
 #' $composition
-#' [1] "TTT" "AC"  "GTC" "AC"
+#' [1] "TTT" "AC" "AC" "GTC" "AC"
 #' $motifs
 #' DNAStringSet object of length 3:
 #'   width seq
