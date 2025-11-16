@@ -182,6 +182,7 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence =
 # match Numeric. The score to return if seq1 exactly matches seq2.
 #
 # Returns `match_score` if `seq1` and `seq2` are identical; otherwise returns 0.
+
 score_match_custom <- function(seq1, seq2, match_score) {
   if (identical(seq1, seq2)) {
     return(match_score)
@@ -190,49 +191,96 @@ score_match_custom <- function(seq1, seq2, match_score) {
   }
 }
 
-##Used ChatGPT to debug composition reconstruction from traceback and derived
+# Reconstruct allele composition from DP traceback
+#
+# Given a dynamic programming traceback, this function reconstructs
+# the allele sequence in terms of matched motifs and gaps/insertions.
+#
+# allele_length Integer. The length of the allele sequence.
+# traceback Character vector. Stores, for each position in the DP table,
+#        either the index of the motif that led to the best score at that position,
+#        or "-" if the position was reached via a gap/indel.
+# motifs DNAStringSet. The set of motifs being used for decomposition.
+# allele DNAString. The original allele sequence to reconstruct.
+#
+# returns the allele sequence decomposed into motifs and gaps.
+
+#Used ChatGPT to debug composition reconstruction from traceback and derived
 #function below
-reconstruct <- function(L, traceback, motifs, allele) {
+
+reconstruct <- function(allele_length, traceback, motifs, allele) {
+
+  # Initialize empty vector to store reconstructed composition
   composition <- character()
-  pos <- L + 1
+
+  # Start from the last position of the DP table
+  pos <- allele_length + 1
 
   while(pos > 1) {
-    t <- traceback[pos]
-    if (is.na(t)) break
+    trace_pos <- traceback[pos]
 
-    if (t == "-") {
-      # Find previous motif position
-      prev_motif_pos <- which(!is.na(traceback[1:(pos - 1)]) & traceback[1:(pos - 1)] != "-")
+    # Stop if traceback is missing (shouldn't happen in normal case)
+    if (is.na(trace_pos)) break
+
+    if (trace_pos == "-") {
+      # If this position was reached via a gap/indel:
+      # Find the last position before 'pos' that corresponds to a motif
+      prev_motif_pos <- which(!is.na(traceback[1:(pos - 1)]) &
+                                traceback[1:(pos - 1)] != "-")
       next_pos <- if(length(prev_motif_pos) == 0) 1 else max(prev_motif_pos)
 
+      # Extract the sequence of the gap/indel
       if(next_pos < pos) {
-        gap_seq <- as.character(subseq(allele, next_pos, pos - 1))
 
+        gap_seq <- as.character(subseq(allele, next_pos, pos - 1))
         composition <- c(gap_seq, composition)
+
       }
+
+      # Carry on
       pos <- next_pos
 
     } else {
-      # Motif match
-      motif_idx <- suppressWarnings(as.integer(t))
+
+      # If this position was reached by a motif match
+      motif_idx <- suppressWarnings(as.integer(trace_pos))
+
       if (!is.na(motif_idx) && motif_idx <= length(motifs)) {
-        k <- width(motifs[motif_idx])
+
+        # Get motif length
+        motif_length <- width(motifs[motif_idx])
+
+        # Prepend motif sequence to composition
         composition <- c(as.character(motifs[motif_idx]), composition)
-        pos <- pos - k
+
+        # Move back by motif length
+        pos <- pos - motif_length
       } else {
-        # fallback
+        # Fallback for unexpected cases: the traceback value does not correspond
+        #to a valid motif
         composition <- c("-", composition)
+
+        # Inform the user
+        warning(
+          sprintf(
+            "Fallback: encountered an unrecognized traceback value at %d. ",
+            pos
+          ),
+          "This part of the allele could not be assigned and is marked as '-'."
+        )
+
         pos <- pos - 1
       }
     }
   }
 
-  # Trailing insertion
-  if(pos <= length(allele)) {
-    trailing_seq <- as.character(subseq(allele, pos, length(allele)))
+  # This handles any sequence before the first recognized motif in the traceback
+  if(pos > 1) {
+    trailing_seq <- as.character(subseq(allele, 1, pos - 1))
+    composition <- c(trailing_seq, composition)
   }
 
-
+  # Return the final reconstructed composition of the allele
   return(composition)
 }
 
