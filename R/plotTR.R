@@ -40,7 +40,6 @@
 #' @import reshape2
 #' @import cowplot
 #' @export plotTR
-
 # Plot
 #the dataframe formating was assisted by chatgpt
 plotTR <- function(aln_matrix, motif_map, large = FALSE) {
@@ -117,4 +116,17 @@ plotTR <- function(aln_matrix, motif_map, large = FALSE) {
 
 
   }
+
+DEFAULT <- c(
+  "#e6194b", "#3cb44b", "#ffe119", "#4363d8", "#f58231", "#911eb4", "#46f0f0",
+  "#f032e6","#bcf60c", "#fabebe", "#008080", "#e6beff", "#9a6324", "#800000",
+  "#aaffc3", "#808000","#ffd8b1", "#000075", "#ff4500", "#32cd32", "#1e90ff",
+  "#ff1493", "#00ced1", "#9b0000","#ff69b4", "#7cfc00", "#ff8c00", "#9400d3",
+  "#00bfff", "#adff2f", "#ff6347", "#40e0d0","#ff7f50", "#6495ed", "#dc143c",
+  "#ff00ff", "#228b22", "#dda0dd", "#ffa500", "#5f9ea0","#d2691e", "#ba55d3",
+  "#00fa9a", "#ffdead", "#4b0082", "#ffb6c1", "#32cd32", "#ff4500","#7b68ee",
+  "#00ff7f", "#ff6347", "#20b2aa", "#ff69b4", "#ff8c00", "#9acd32", "#ff1493",
+  "#4682b4", "#ff6347", "#6a5acd", "#00ff7f", "#ff4500", "#00ced1", "#ff69b4",
+  "#32cd32","#ff8c00", "#7cfc00"
+)
 

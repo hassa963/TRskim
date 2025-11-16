@@ -2,7 +2,6 @@
 
 export(alignTRs)
 export(decomposeTRs)
-export(encodeTR)
 export(encodeTRs)
 export(plotTR)
 import(Biostrings)

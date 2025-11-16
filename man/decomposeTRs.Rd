@@ -22,7 +22,7 @@ and the sequence permitted to be still be later encoded as a motif. By
 default this is 0}
 }
 \value{
-This function returns the tandem repeat alleles as a vector
+This function returns the tandem repeat allele(s) as a vector
 decomposed into there motifs as character vectors.
 For example, the allele \code{"ATATAT"} with motif \code{"AT"} is decomposed
 into \code{c("AT", "AT", "AT")}. And an updated DNAStringSet of mptifs containing

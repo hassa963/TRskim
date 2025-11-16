@@ -3,7 +3,7 @@ test_that("encodeTR correctly encodes decomposed motifs", {
   decomposed_TR <- c("AC", "AC", "GT", "AC")
   motifs <- c("AC", "GT")
 
-  encoded <- encodeTR(decomposed_TR, motifs)
+  encoded <- encodeTRs(decomposed_TR, motifs)
 
   # Expected outputs
   expected_encoded <- "AABA"

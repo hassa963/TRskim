@@ -13,12 +13,12 @@ repeats (ex. "-"  "-"  "AC" "AC" "GT" "AC")}
 \item{motifs}{A character vector containing the motifs that may be in the TR}
 }
 \value{
-Returns a list containing the encoded tandem repeats in $encoded and the
+Returns encoded tandem repeats in $encoded and the
 mapping of the motifs to their symbols in $map
 }
 \description{
 A function that encodes decomposed tandem repeats such that each unique
-motif is a single character symbol
+motif is a single character symbol. \strong{MAXIMUM OF 66 ENCODINGS}
 }
 \examples{
 \dontrun{
@@ -45,6 +45,20 @@ AC  GT TTT  CC
 "A" "B" "C" "D"
 }
 
+\dontrun{
+
+decomposed_TR <- c("AC", "AC", "GT", "AC")
+motifs <- c("AC", "GT")
+encoded <- encodeTRs(decomposed_TR, motifs)
+
+encoded$encoded
+[1] "AABA"
+
+encoded$map
+ AC  GT
+"A" "B"
+
+}
 }
 \references{
 OpenAI. ChatGPT (GPT-5) large language model (2025).https://chat.openai.com/
@@ -52,4 +66,8 @@ OpenAI. ChatGPT (GPT-5) large language model (2025).https://chat.openai.com/
 Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
 for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
 Advances 3, (2023).
+
+R Core Team. R: A Language and Environment for Statistical Computing.
+(R Foundation for Statistical Computing, 2025). Available at:
+https://www.R-project.org/
 }

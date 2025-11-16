@@ -305,7 +305,7 @@ reconstruct <- function(allele_length, traceback, motifs, allele) {
 #' @param allowance is the number of mismatches between the motif
 #' and the sequence permitted to be still be later encoded as a motif. By
 #' default this is 0
-#' @return This function returns the tandem repeat alleles as a vector
+#' @return This function returns the tandem repeat allele(s) as a vector
 #' decomposed into there motifs as character vectors.
 #' For example, the allele `"ATATAT"` with motif `"AT"` is decomposed
 #' into `c("AT", "AT", "AT")`. And an updated DNAStringSet of mptifs containing
