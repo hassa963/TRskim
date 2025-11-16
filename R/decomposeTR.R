@@ -1,3 +1,4 @@
+### helpers ####
 # A function that decomposes an allele into the supplied motifs given either a
 # character string or DNAString of the allele
 #
@@ -170,11 +171,20 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence =
   ))
 }
 
-### helpers ####
-score_match_custom <- function(seq1, seq2, match) {
-  # Returns 'match' if the entire motif matches, else 0
+# Score a motif match against a sequence
+#
+# This helper function compares a candidate sequence against a motif.
+# If the sequence perfectly matches the motif, it returns a specified score.
+# Otherwise, it returns 0.
+#
+# seq1 Character string. The sequence segment from the allele to be compared.
+# seq2 Character string. The motif sequence to match against seq1.
+# match Numeric. The score to return if seq1 exactly matches seq2.
+#
+# Returns `match_score` if `seq1` and `seq2` are identical; otherwise returns 0.
+score_match_custom <- function(seq1, seq2, match_score) {
   if (identical(seq1, seq2)) {
-    return(match)
+    return(match_score)
   } else {
     return(0)
   }
@@ -226,6 +236,7 @@ reconstruct <- function(L, traceback, motifs, allele) {
   return(composition)
 }
 
+###User function####
 #' Decomposition of Tandem Repeats
 #'
 #' A function that decomposes alleles into the supplied motifs given either a
