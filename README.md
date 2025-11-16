@@ -61,15 +61,13 @@ browseVignettes("TRskim")
 
 1.  ***decomposeTRs*** for decomposing tandem repeats into their motifs.
 
-2.  ***encodeTR*** for encoding a decomposed tandem repeat into its
-    motifs such that each motif has a one character symbol.
+2.  ***encodeTRs*** for encoding decomposed tandem repeats into their
+    motifs such that each motif has a one character symbol. **Can only
+    encode a maximum of 66 different motifs**
 
-3.  ***encodeTRs*** for encoding decomposed tandem repeats into their
-    motifs such that each motif has a one character symbol.
+3.  ***alignTRs*** for aligning tandem repeats by their motifs.
 
-4.  ***alignTRs*** for aligning tandem repeats by their motifs.
-
-5.  ***plotTR*** for visualizing aligned tandem repeats by their motif
+4.  ***plotTR*** for visualizing aligned tandem repeats by their motif
     composition.
 
 The package also contains DNAstringSets of tandem repeats and motifs,
