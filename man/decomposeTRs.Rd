@@ -4,7 +4,7 @@
 \alias{decomposeTRs}
 \title{Decomposition of Tandem Repeats}
 \usage{
-decomposeTRs(alleles, motifs, match = 1, indel = -1, allowence = 0)
+decomposeTRs(alleles, motifs, match_score = 1, indel = -1, allowence = 0)
 }
 \arguments{
 \item{alleles}{DNAStringSet or character string vector of the Tandem repeats}
@@ -12,7 +12,7 @@ decomposeTRs(alleles, motifs, match = 1, indel = -1, allowence = 0)
 \item{motifs}{a vector of strings or a DNAStringSet that are the expected
 motifs of the Tandem Repeat}
 
-\item{match}{score for if motif matches sequence this is by default 1}
+\item{match_score}{score for if motif matches sequence this is by default 1}
 
 \item{indel}{score for if there is an insertion or deletion in sequence by
 default this is -1}
@@ -64,6 +64,25 @@ DNAStringSet object of length 4:
 [2]     2 GT
 [3]     3 TTT
 [4]     2 TT
+}
+
+\dontrun{
+##Example 2
+
+allele <- DNAString("TTTACACGTCAC")
+motifs <- DNAStringSet(c("AC", "GTC"))
+composition <- decomposeTRs(allele, motifs)
+composition
+
+###Expected
+$compositions[[1]]
+[1] "TTT" "AC" "AC" "GTC" "AC"
+$motifs
+DNAStringSet object of length 3:
+  width seq
+[1]     2 AC
+[2]     3 GTC
+[3]     3 TTT
 }
 
 }

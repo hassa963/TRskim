@@ -35,8 +35,9 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence =
   #---------------------------------------------------------------
 
   # Convert character inputs into Biostrings objects if needed
-  if (is.character(allele)) allele <- DNAString(allele)
-  if (is.character(motifs)) motifs <- DNAStringSet(motifs)
+  #uses classes from biostrings
+  if (is.character(allele)) allele <- Biostrings::DNAString(allele)
+  if (is.character(motifs)) motifs <- Biostrings::DNAStringSet(motifs)
 
   # Ensure correct classes
   if(!is(allele, "DNAString"))
@@ -68,7 +69,10 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence =
   #---------------------------------------------------------------
 
   hits_df <- do.call(rbind, lapply(seq_along(motifs), function(m) {
-    hits <- matchPattern(motifs[[m]], allele, max.mismatch = allowence)
+
+    #uses function from Biostrings
+    hits <- Biostrings::matchPattern(motifs[[m]],
+                                     allele, max.mismatch = allowence)
 
     # If this motif does not occur anywhere, skip
     if (length(hits) == 0){
@@ -293,7 +297,7 @@ reconstruct <- function(allele_length, traceback, motifs, allele) {
 #' @param alleles DNAStringSet or character string vector of the Tandem repeats
 #' @param motifs a vector of strings or a DNAStringSet that are the expected
 #' motifs of the Tandem Repeat
-#' @param match score for if motif matches sequence this is by default 1
+#' @param match_score score for if motif matches sequence this is by default 1
 #' @param indel score for if there is an insertion or deletion in sequence by
 #' default this is -1
 #' @param allowence is the number of mismatches between the motif
@@ -357,30 +361,82 @@ reconstruct <- function(allele_length, traceback, motifs, allele) {
 #' [4]     2 TT
 #' }
 #'
+#' \dontrun{
+#' ##Example 2
+#'
+#' allele <- DNAString("TTTACACGTCAC")
+#' motifs <- DNAStringSet(c("AC", "GTC"))
+#' composition <- decomposeTRs(allele, motifs)
+#' composition
+#'
+#' ###Expected
+#' $compositions[[1]]
+#' [1] "TTT" "AC" "AC" "GTC" "AC"
+#' $motifs
+#' DNAStringSet object of length 3:
+#'   width seq
+#' [1]     2 AC
+#' [2]     3 GTC
+#' [3]     3 TTT
+#' }
+#'
 #' @import Biostrings
 #' @importFrom methods is
 #' @export decomposeTRs
+#'
+#'
 
-decomposeTRs <- function(alleles, motifs, match = 1,
+decomposeTRs <- function(alleles, motifs, match_score = 1,
                          indel = -1, allowence = 0) {
 
-  if (is.character(alleles)) alleles <- DNAStringSet(alleles) #from Biostrings
-  if (is.character(motifs)) motifs <- DNAStringSet(motifs)  #from Biostrings
-
-  if(!is(alleles, "DNAStringSet")){
-    stop("Alleles should be character vector or DNAStringset")
+  #------------------------------------------------------------
+  # Normalize alleles
+  #------------------------------------------------------------
+  #used classes from biostrings
+  if (is.character(alleles)) {
+    if (length(alleles) == 1) {
+      alleles <- Biostrings::DNAString(alleles)      # single string
+    } else {
+      alleles <- Biostrings::DNAStringSet(alleles)   # vector of strings
+    }
   }
 
-  if(!is(motifs, "DNAStringSet")){
-    stop("Motifs should be character vector or DNAStringset")
+  if (is.character(motifs)) {
+    motifs <- Biostrings::DNAStringSet(motifs)
   }
 
-  TRs <- lapply(alleles, function(allele) {
-    decomposeTR(allele, motifs, match, indel, allowence)
+  # Validate inputs
+  if (!inherits(alleles, "DNAString") &&
+      !inherits(alleles, "DNAStringSet")) {
+    stop("Alleles must be a character string/vector, a DNAString, or a DNAStringSet")
+  }
+
+  if (!inherits(motifs, "DNAStringSet")) {
+    stop("Motifs must be a character vector or a DNAStringSet")
+  }
+
+  #------------------------------------------------------------
+  # Case 1: Single allele (DNAString)
+  #------------------------------------------------------------
+  if (inherits(alleles, "DNAString")) {
+
+    tandem_repeat <- decomposeTR(alleles, motifs, match_score, indel, allowence)
+
+    return(list(
+      compositions = list(tandem_repeat$composition),
+      motifs = tandem_repeat$motifs
+    ))
+  }
+
+  #------------------------------------------------------------
+  # Case 2: DNAStringSet → apply to each allele
+  #------------------------------------------------------------
+  tandem_repeats <- lapply(alleles, function(allele) {
+    decomposeTR(allele, motifs, match_score, indel, allowence)
   })
 
-  all_compositions <- lapply(TRs, `[[`, "composition")
-  all_motifs <- lapply(TRs, `[[`, "motifs")
+  all_compositions <- lapply(tandem_repeats, `[[`, "composition")
+  all_motifs <- lapply(tandem_repeats, `[[`, "motifs")
   combined_motifs <- unique(do.call(c, all_motifs))
 
   return(list(
@@ -390,6 +446,4 @@ decomposeTRs <- function(alleles, motifs, match = 1,
 }
 
 
-
-
-
+# [END]

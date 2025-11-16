@@ -59,20 +59,17 @@ browseVignettes("TRskim")
 
 `TRskim` contains 6 functions:
 
-1.  ***decomposeTR*** for decomposing a tandem repeat into their motifs.
+1.  ***decomposeTRs*** for decomposing tandem repeats into their motifs.
 
-2.  ***decomposeTRs*** for decomposing multiple tandem repeats into
-    their motifs.
-
-3.  ***encodeTR*** for encoding a decomposed tandem repeat into its
+2.  ***encodeTR*** for encoding a decomposed tandem repeat into its
     motifs such that each motif has a one character symbol.
 
-4.  ***encodeTRs*** for encoding decomposed tandem repeats into their
+3.  ***encodeTRs*** for encoding decomposed tandem repeats into their
     motifs such that each motif has a one character symbol.
 
-5.  ***alignTRs*** for aligning tandem repeats by their motifs.
+4.  ***alignTRs*** for aligning tandem repeats by their motifs.
 
-6.  ***plotTR*** for visualizing aligned tandem repeats by their motif
+5.  ***plotTR*** for visualizing aligned tandem repeats by their motif
     composition.
 
 The package also contains DNAstringSets of tandem repeats and motifs,
@@ -83,10 +80,10 @@ Overview of the package is shown below.
 
 ## Contributions
 
-The author of TRskim is Nour Hassan. TRskim contains 6 functions. All of
+The author of TRskim is Nour Hassan. TRskim contains 4 functions. All of
 which were written by the author and utilizes functions from other
 packages. The algorithm for decomposing the tandem repeats in
-`decomposeTR` is based on the algorithm from a python library called
+`decomposeTRs` is based on the algorithm from a python library called
 TRviz (Park et al., 2023), and ChatGPT was used to dissect said
 algorithm and create a skeleton for how to implement something similar
 in R. The function also utilizes `Biostrings` by taking in `DNAString`s
@@ -118,7 +115,8 @@ function.
   Bioinformatics Advances 3, (2023).
 
 - R Core Team. R: A Language and Environment for Statistical Computing.
-  Vienna Austria: R Foundation for Statistical Computing (2025).
+  Vienna  
+  Austria: R Foundation for Statistical Computing (2025).
   <https://www.R-project.org/>
 
 - Wickham, H. ggplot2: Elegant Graphics for Data Analysis.
@@ -128,8 +126,9 @@ function.
   21, 1–20 (2007).
 
 - Wilke, C. cowplot: Streamlined Plot Theme and Plot Annotations for
-  ggplot2. R package version 1.2.0,
-  <https://CRAN.R-project.org/package=cowplot> (2025)
+  ggplot2. R  
+  package version 1.2.0, <https://CRAN.R-project.org/package=cowplot>
+  (2025)
 
 ## Acknowledgements
 
