@@ -4,7 +4,7 @@
 \alias{decomposeTR}
 \title{Tandem Repeat Decomposition}
 \usage{
-decomposeTR(allele, motifs, match = 1, indel = -1, allowence = 0)
+decomposeTR(allele, motifs, match_score = 1, indel = -1, allowence = 0)
 }
 \arguments{
 \item{allele}{DNAString or character string of the Tandem repeat}
@@ -12,7 +12,7 @@ decomposeTR(allele, motifs, match = 1, indel = -1, allowence = 0)
 \item{motifs}{a vector of strings or a DNAStringSet that are the expected
 motifs of the Tandem Repeat}
 
-\item{match}{score for if motif matches sequence this is by default 1}
+\item{match_score}{for if motif matches sequence this is by default 1}
 
 \item{indel}{score for if there is an insertion or deletion in sequence by
 default this is -1}

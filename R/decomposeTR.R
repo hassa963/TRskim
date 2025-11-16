@@ -6,7 +6,7 @@
 #' @param allele DNAString or character string of the Tandem repeat
 #' @param motifs a vector of strings or a DNAStringSet that are the expected
 #' motifs of the Tandem Repeat
-#' @param match score for if motif matches sequence this is by default 1
+#' @param match_score for if motif matches sequence this is by default 1
 #' @param indel score for if there is an insertion or deletion in sequence by
 #' default this is -1
 #' @param allowence is the number of mismatches between the motif
@@ -77,79 +77,143 @@
 # DP decomposition with indels
 #assisted by Chat Gpt To translate TRviz algorithm into an R implementation then
 #debugged heavily to allow for proper decomposition (given a skeleton)
-decomposeTR <- function(allele, motifs, match = 1, indel = -1, allowence = 0) {
-  # Ensure correct object types
+decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence = 0) {
+
+  #---------------------------------------------------------------
+  # Input normalization and validation
+  #---------------------------------------------------------------
+
+  # Convert character inputs into Biostrings objects if needed
   if (is.character(allele)) allele <- DNAString(allele)
   if (is.character(motifs)) motifs <- DNAStringSet(motifs)
 
-  if(!is(allele, "DNAString")) stop("allele must be DNAString or character")
-  if(!is(motifs, "DNAStringSet")) stop("motifs must be DNAStringSet or character vector")
+  # Ensure correct classes
+  if(!is(allele, "DNAString"))
+    stop("allele must be DNAString or character")
 
-  L <- length(allele)
-  M <- length(motifs)
+  if(!is(motifs, "DNAStringSet"))
+    stop("motifs must be DNAStringSet or character vector")
 
-  DP <- rep(-Inf, L + 1)
-  traceback <- rep(NA_character_, L + 1)
-  DP[1] <- 0
+  #length of allele
+  allele_length <- length(allele)
 
-  # Precompute motif hits
+
+  #---------------------------------------------------------------
+  # Dynamic programming setup
+  #---------------------------------------------------------------
+
+  # dp_table[i] = best score achievable ending at allele position i-1
+  # (dp_table is indexed from 1 to L+1)
+  dp_table<- rep(-Inf, allele_length + 1)
+
+  # traceback[i] stores which motif index or gap ('-') leads to DP[i]
+  traceback <- rep(NA_character_, allele_length + 1)
+  dp_table[1] <- 0 # Starting position has score 0
+
+  #---------------------------------------------------------------
+  # Precompute all motif matches along the allele
+  #   - For each motif, find all approximate matches (allowence mismatches)
+  #   - Store start/end coordinates and motif index
+  #---------------------------------------------------------------
+
   hits_df <- do.call(rbind, lapply(seq_along(motifs), function(m) {
     hits <- matchPattern(motifs[[m]], allele, max.mismatch = allowence)
-    if (length(hits) == 0) return(NULL)
 
-    df <- data.frame(
+    # If this motif does not occur anywhere, skip
+    if (length(hits) == 0){
+      return(NULL)}
+
+    pos_df <- data.frame(
       start = start(hits),
       end = end(hits),
       motif_idx = m
     )
 
     # Filter invalid coordinates
-    df <- df[df$start >= 1 & df$end <= length(allele) & df$start <= df$end, , drop = FALSE]
-    if (nrow(df) == 0) return(NULL)
+    pos_df <- pos_df[pos_df$start >= 1 & pos_df$end <= allele_length
+                     & pos_df$start <= pos_df$end, , drop = FALSE]
 
-    df
+    if (nrow(pos_df) == 0) return(NULL)
+
+    pos_df
   }))
 
-
+  # If no motif matches found, return empty output early
   if (is.null(hits_df) || nrow(hits_df) == 0) {
     message("No motif matches found in allele.")
     return(character(0))
   }
 
+  # Sort hits by genomic position for sequential Dp_table processing
   hits_df <- hits_df[order(hits_df$start), ]
 
-  # Fill DP table
-  for(pos in 1:L) {
-    # Gap/indel
-    if(DP[pos] != -Inf && pos + 1 <= L + 1) {
-      score_gap <- DP[pos] + indel
-      if(score_gap > DP[pos + 1]) {
-        DP[pos + 1] <- score_gap
+  #---------------------------------------------------------------
+  # Dynamic programming forward pass
+  #   For each position in the allele:
+  #      1. Consider taking a gap/indel
+  #      2. Consider matching a motif starting here
+  #---------------------------------------------------------------
+
+  for(pos in seq(along = allele) ){
+
+    #-----------------------------------------------------------
+    # Option 1: Move forward by 1 with an indel penalty
+    #-----------------------------------------------------------
+
+    if(dp_table[pos] != -Inf && pos + 1 <= allele_length+ 1) {
+      score_gap <-dp_table[pos] + indel
+
+      # Update dp_table if taking the gap is better
+      if(score_gap > dp_table[pos + 1]) {
+        dp_table[pos + 1] <- score_gap
         traceback[pos + 1] <- "-"
       }
     }
 
-    # Motif hits
+    #-----------------------------------------------------------
+    # Option 2: Extend by matching a motif starting at 'pos'
+    #-----------------------------------------------------------
+
+    # Extract all motif hits that begin at this position
     hits_here <- hits_df[hits_df$start == pos, , drop = FALSE]
+
     for(i in seq_len(nrow(hits_here))) {
-      s <- hits_here[i, ]
-      motif_seq <- as.character(motifs[[s$motif_idx]])
-      subseq_allele <- as.character(subseq(allele, s$start, s$end))
-      score <- if(identical(subseq_allele, motif_seq)) match else 0
-      new_score <- DP[pos] + score
-      if(new_score > DP[s$end + 1]) {
-        DP[s$end + 1] <- new_score
-        traceback[s$end + 1] <- as.character(s$motif_idx)
+      hit <- hits_here[i, ]
+
+      # Extract the motif's sequence and the allele slice
+      motif_seq <- as.character(motifs[[hit$motif_idx]])
+      subseq_allele <- as.character(subseq(allele, hit$start, hit$end))
+
+      # Award a 'match' score if perfectly matching, otherwise 0
+      score <- score_match_custom(subseq_allele, motif_seq, match_score)
+
+      # New cumulative DP score if we take this motif
+      new_score <-dp_table[pos] + score
+
+      # dp_table state moves to the end of the motif + 1
+      if(new_score > dp_table[hit$end + 1]) {
+
+        dp_table[hit$end + 1] <- new_score
+        traceback[hit$end + 1] <- as.character(hit$motif_idx)
+
       }
     }
   }
 
-  # Reconstruct sequence with insertions preserved
-  composition <- reconstruct(L, traceback, motifs, allele)
+  #---------------------------------------------------------------
+  # Reconstruct the allele sequence from the DP traceback
+  #---------------------------------------------------------------
+  composition <- reconstruct(allele_length, traceback, motifs, allele)
 
+  #---------------------------------------------------------------
+  # Detect and append novel motifs
+  #---------------------------------------------------------------
   new_motifs <- setdiff(composition, motifs)
   motifs <- c(motifs, DNAStringSet(new_motifs))
 
+  #---------------------------------------------------------------
+  # Return final decomposition
+  #---------------------------------------------------------------
   return(list(
     composition = composition,
     motifs = motifs
