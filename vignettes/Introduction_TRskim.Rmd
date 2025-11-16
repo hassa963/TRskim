@@ -28,7 +28,8 @@ library("TRskim")
 
 To list all functions available in the package:
 
-```r
+```{r}
+library(TRskim)
 ls("package:TRskim")
 ```
 ## Decompose Tandem Repeats
@@ -37,7 +38,6 @@ The function **decomposeTRs** decomposes the alleles into the given motifs and
 adds new motifs based onn the gaps between the motifs across the alleles.
 
 ```{r}
-library(TRskim)
 decomposed <- decomposeTRs(SOL1, motifs_SOL1) 
 
 decomposed_TRs <- decomposed$compositions

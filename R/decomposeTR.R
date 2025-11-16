@@ -13,7 +13,7 @@
 # indel score for if there is an insertion or deletion in sequence by
 # default this is -1
 #
-# allowence is the number of mismatches between the motif
+# allowance is the number of mismatches between the motif
 # and the sequence permitted to be still be later encoded as a motif. By
 # default this is 0
 #
@@ -28,7 +28,7 @@
 # DP decomposition with indels
 #assisted by Chat Gpt To translate TRviz algorithm into an R implementation then
 #debugged heavily to allow for proper decomposition (given a skeleton)
-decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence = 0) {
+decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowance = 0) {
 
   #---------------------------------------------------------------
   # Input normalization and validation
@@ -55,7 +55,7 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence =
   #---------------------------------------------------------------
 
   # dp_table[i] = best score achievable ending at allele position i-1
-  # (dp_table is indexed from 1 to L+1)
+  # (dp_table is indexed from 1 to allele_length+1)
   dp_table<- rep(-Inf, allele_length + 1)
 
   # traceback[i] stores which motif index or gap ('-') leads to DP[i]
@@ -72,7 +72,7 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowence =
 
     #uses function from Biostrings
     hits <- Biostrings::matchPattern(motifs[[m]],
-                                     allele, max.mismatch = allowence)
+                                     allele, max.mismatch = allowance)
 
     # If this motif does not occur anywhere, skip
     if (length(hits) == 0){
@@ -300,7 +300,7 @@ reconstruct <- function(allele_length, traceback, motifs, allele) {
 #' @param match_score score for if motif matches sequence this is by default 1
 #' @param indel score for if there is an insertion or deletion in sequence by
 #' default this is -1
-#' @param allowence is the number of mismatches between the motif
+#' @param allowance is the number of mismatches between the motif
 #' and the sequence permitted to be still be later encoded as a motif. By
 #' default this is 0
 #' @return This function returns the tandem repeat alleles as a vector
@@ -387,7 +387,7 @@ reconstruct <- function(allele_length, traceback, motifs, allele) {
 #'
 
 decomposeTRs <- function(alleles, motifs, match_score = 1,
-                         indel = -1, allowence = 0) {
+                         indel = -1, allowance = 0) {
 
   #------------------------------------------------------------
   # Normalize alleles
@@ -405,6 +405,10 @@ decomposeTRs <- function(alleles, motifs, match_score = 1,
     motifs <- Biostrings::DNAStringSet(motifs)
   }
 
+  # Prioritize longer motifs
+  motif_order <- order(width(motifs), decreasing = TRUE)
+  motifs <- motifs[motif_order]
+
   # Validate inputs
   if (!inherits(alleles, "DNAString") &&
       !inherits(alleles, "DNAStringSet")) {
@@ -420,7 +424,7 @@ decomposeTRs <- function(alleles, motifs, match_score = 1,
   #------------------------------------------------------------
   if (inherits(alleles, "DNAString")) {
 
-    tandem_repeat <- decomposeTR(alleles, motifs, match_score, indel, allowence)
+    tandem_repeat <- decomposeTR(alleles, motifs, match_score, indel, allowance)
 
     return(list(
       compositions = list(tandem_repeat$composition),
@@ -432,7 +436,7 @@ decomposeTRs <- function(alleles, motifs, match_score = 1,
   # Case 2: DNAStringSet → apply to each allele
   #------------------------------------------------------------
   tandem_repeats <- lapply(alleles, function(allele) {
-    decomposeTR(allele, motifs, match_score, indel, allowence)
+    decomposeTR(allele, motifs, match_score, indel, allowance)
   })
 
   all_compositions <- lapply(tandem_repeats, `[[`, "composition")

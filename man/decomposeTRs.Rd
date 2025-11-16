@@ -4,7 +4,7 @@
 \alias{decomposeTRs}
 \title{Decomposition of Tandem Repeats}
 \usage{
-decomposeTRs(alleles, motifs, match_score = 1, indel = -1, allowence = 0)
+decomposeTRs(alleles, motifs, match_score = 1, indel = -1, allowance = 0)
 }
 \arguments{
 \item{alleles}{DNAStringSet or character string vector of the Tandem repeats}
@@ -17,7 +17,7 @@ motifs of the Tandem Repeat}
 \item{indel}{score for if there is an insertion or deletion in sequence by
 default this is -1}
 
-\item{allowence}{is the number of mismatches between the motif
+\item{allowance}{is the number of mismatches between the motif
 and the sequence permitted to be still be later encoded as a motif. By
 default this is 0}
 }

@@ -22,7 +22,9 @@ Imports:
   methods,
   cowplot,
   stats,
-  biocViews
+biocViews: 
+  Genetics, 
+  Sequencing
 Suggests: 
     knitr,
     rmarkdown,
