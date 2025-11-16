@@ -1,78 +1,28 @@
-#' Tandem Repeat Decomposition
-#'
-#' A function that decomposes an allele into the supplied motifs given either a
-#' character string or DNAString of the allele
-#'
-#' @param allele DNAString or character string of the Tandem repeat
-#' @param motifs a vector of strings or a DNAStringSet that are the expected
-#' motifs of the Tandem Repeat
-#' @param match_score for if motif matches sequence this is by default 1
-#' @param indel score for if there is an insertion or deletion in sequence by
-#' default this is -1
-#' @param allowence is the number of mismatches between the motif
-#' and the sequence permitted to be still be later encoded as a motif. By
-#' default this is 0
-#' @return This function returns the tandem repeat allele decomposed into its
-#' motifs as a character vector. For example, the allele `"ATATAT"` with motif
-#' `"AT"` is decomposed into `c("AT", "AT", "AT")` as well as an updated motifs
-#' DNAStringSet consisting of novel motifs detected in the allele.
-#'
-#' If no motifs are found in the allele from the initial motif set,
-#' the function returns `character(0)`and prints a message to inform the user.
-#'
-#' @examples
-#' \dontrun{
-#' ##Example 1
-#'
-#' library(Biostrings)
-#' allele <- DNAString("TTTACACGTAC")
-#' motifs <- DNAStringSet(c("AC", "GT"))
-#' composition <- decomposeTR(allele, motifs)
-#' composition
-#'
-#' ###Expected:
-#' $composition
-#' [1] "TTT" "AC"  "AC"  "GT"  "AC"
-#'
-#' $motifs
-#' DNAStringSet object of length 3:
-#'   width seq
-#' [1]     2 AC
-#' [2]     2 GT
-#' [3]     3 TTT
-#' }
-#'
-#' \dontrun{
-#' ##Example 2
-#'
-#' allele <- DNAString("TTTACACGTCAC")
-#' motifs <- DNAStringSet(c("AC", "GTC"))
-#' composition <- decomposeTR(allele, motifs)
-#' composition
-#'
-#' ###Expected
-#' $composition
-#' [1] "TTT" "AC" "AC" "GTC" "AC"
-#' $motifs
-#' DNAStringSet object of length 3:
-#'   width seq
-#' [1]     2 AC
-#' [2]     3 GTC
-#' [3]     3 TTT
-#'}
-#' @references OpenAI. ChatGPT (GPT-5) large language model (2025).
-#' https://chat.openai.com/
-#'
-#' Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
-#' manipulation of biological strings (R package version 2.77.2, 2025).
-#' https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
-#'
-#' Park, J., Kaufman, E., Valdmanis, P. N. & Bafna, V. TRviz: A Python Library
-#' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
-#' Advances 3, (2023).
-#'
-#' @import Biostrings
-#' @export decomposeTR
+# A function that decomposes an allele into the supplied motifs given either a
+# character string or DNAString of the allele
+#
+# allele DNAString or character string of the Tandem repeat
+#
+# motifs a vector of strings or a DNAStringSet that are the expected
+#
+# motifs of the Tandem Repeat
+#
+# match_score for if motif matches sequence this is by default 1
+#
+# indel score for if there is an insertion or deletion in sequence by
+# default this is -1
+#
+# allowence is the number of mismatches between the motif
+# and the sequence permitted to be still be later encoded as a motif. By
+# default this is 0
+#
+# This function returns the tandem repeat allele decomposed into its
+# motifs as a character vector. For example, the allele `"ATATAT"` with motif
+# `"AT"` is decomposed into `c("AT", "AT", "AT")` as well as an updated motifs
+# DNAStringSet consisting of novel motifs detected in the allele.
+#
+# If no motifs are found in the allele from the initial motif set,
+# the function returns `character(0)`and prints a message to inform the user.
 
 # DP decomposition with indels
 #assisted by Chat Gpt To translate TRviz algorithm into an R implementation then
@@ -313,6 +263,9 @@ reconstruct <- function(L, traceback, motifs, allele) {
 #' R Core Team. R: A Language and Environment for Statistical Computing. Vienna,
 #' Austria: R Foundation for Statistical Computing (2025).
 #' https://www.R-project.org/
+#'
+#' OpenAI. ChatGPT (GPT-5) large language model (2025).
+#'  https://chat.openai.com/
 #'
 #' @examples
 #' \dontrun{

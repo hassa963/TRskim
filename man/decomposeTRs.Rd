@@ -79,4 +79,7 @@ Advances 3, (2023).
 R Core Team. R: A Language and Environment for Statistical Computing. Vienna,
 Austria: R Foundation for Statistical Computing (2025).
 https://www.R-project.org/
+
+OpenAI. ChatGPT (GPT-5) large language model (2025).
+https://chat.openai.com/
 }
