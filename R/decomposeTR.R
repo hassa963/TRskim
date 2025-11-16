@@ -140,7 +140,9 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowance =
       subseq_allele <- as.character(subseq(allele, hit$start, hit$end))
 
       # Award a 'match' score if perfectly matching, otherwise 0
-      score <- score_match_custom(subseq_allele, motif_seq, match_score)
+      #longer motifs are prioritized (weighted scoring)
+      score <- score_match_custom(subseq_allele, motif_seq,
+                                  match_score * width(motif_seq) )
 
       # New cumulative DP score if we take this motif
       new_score <-dp_table[pos] + score
