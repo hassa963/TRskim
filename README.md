@@ -17,6 +17,19 @@ them, and generates tile plots to compare motif patterns across alleles.
 The tool is intended for those researching tandem repeats and would like
 to perform a motif composition analysis across alleles.
 
+TRskim provides motif-level decomposition and visualization of tandem
+repeats, enabling researchers to inspect the internal structure of
+repeat arrays across alleles. While most tools report only repeat
+length, TRskim presents a potential motif composition, detects
+interruptions, and highlights blended versus pure repeat patterns. This
+level of resolution is essential for studying pathogenic repeat
+expansions and assessing repeat instability, as motif structure
+influence disease relevance, mutational dynamics, and secondary
+structure formation. While there are libraries available in python
+(TRviz) that perform a similar workflow, TRskim circumnavigates the need
+to port in a separate coding language and can easily be included in R
+workflows.
+
 TRskim was developed in the following environment: R version: 4.5.1
 (2025-06-13) - “Great Square Root” Platform: aarch64-apple-darwin20
 

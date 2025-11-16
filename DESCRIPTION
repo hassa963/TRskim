@@ -21,7 +21,8 @@ Imports:
   reshape2,
   methods,
   cowplot,
-  stats
+  stats,
+  biocViews
 Suggests: 
     knitr,
     rmarkdown,
