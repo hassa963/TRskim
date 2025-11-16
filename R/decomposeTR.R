@@ -64,7 +64,7 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowance =
 
   #---------------------------------------------------------------
   # Precompute all motif matches along the allele
-  #   - For each motif, find all approximate matches (allowence mismatches)
+  #   - For each motif, find all approximate matches (allowance mismatches)
   #   - Store start/end coordinates and motif index
   #---------------------------------------------------------------
 
