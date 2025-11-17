@@ -86,7 +86,8 @@ alignTRs <- function(encoded_trs) {
 
     for (j in 1:(i-1)) {
       prev_idx <- order_idx[j]
-      aligned[[prev_idx]] <- insert_gaps(aligned[[prev_idx]], old_profile, profile)
+      aligned[[prev_idx]] <- insert_gaps(aligned[[prev_idx]], old_profile,
+                                         profile)
     }
 
     # Store newly aligned sequence
@@ -123,7 +124,8 @@ insert_gaps <- function(seq, old_profile, new_profile) {
   # Loop through positions in the new profile
   for (new_idx in seq_along(new_profile)) {
 
-    if (old_idx <= length(old_profile) && new_profile[new_idx] == old_profile[old_idx]) {
+    if (old_idx <= length(old_profile) && new_profile[new_idx] ==
+        old_profile[old_idx]) {
 
       # Case 1: Position matches old profile
       # Copy the corresponding element from the old sequence
@@ -218,7 +220,8 @@ align_pair <- function(seq1, seq2) {
     }
 
     # Check if current cell came from up (gap in seq2)
-    if (i > 1 && abs(dp_matrix[i, j] - (dp_matrix[i - 1, j] + gap_penalty)) < 1e-10) {
+    if (i > 1 && abs(dp_matrix[i, j] - (dp_matrix[i - 1, j] + gap_penalty))
+        < 1e-10) {
       aligned_seq1 <- c(seq1[i - 1], aligned_seq1)
       aligned_seq2 <- c("-", aligned_seq2)
       i <- i - 1
