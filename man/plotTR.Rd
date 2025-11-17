@@ -4,22 +4,37 @@
 \alias{plotTR}
 \title{Plot a Tandem Repeat Alignment}
 \usage{
-plotTR(aln_matrix, motif_map, large = FALSE)
+plotTR(
+  aln_matrix,
+  motif_map,
+  colour_palette = default_palette,
+  graph_title = "Tandem Repeat Alignment",
+  title_size = 10,
+  axis_size = 8,
+  legend_size = 8,
+  show_motifs = TRUE
+)
 }
 \arguments{
-\item{aln_matrix}{A character matrix returned by alignTRs}
+\item{aln_matrix}{A character matrix returned by alignTRs()}
 
-\item{motif_map}{A named character vector where the names are different
-motifs}
+\item{motif_map}{A named character vector mapping encoded letters to motifs}
 
-\item{large}{A boolean value that makes the legend separate from the plot if
-it is a large number of motifs}
+\item{colour_palette}{Vector of colours (default = default_palette)}
+
+\item{graph_title}{Plot title}
+
+\item{title_size}{Font size for title}
+
+\item{axis_size}{Font size for axis titles}
+
+\item{legend_size}{Font size for legend}
+
+\item{show_motifs}{Whether or not user wants actual motif or encoded motif
+in their legend}
 }
 \value{
-a tile graph showing the motif compositions/alignments of the alleles
-containg a legend for the different motifs and grew for the indels ("-"). If
-large is true it will return the plot in $plot and an object containing the
-legend which can be viewed with \code{grid.newpage()} and \code{grid.draw()}
+A ggplot object, or list(plot, legend) if large = TRUE
 }
 \description{
 Visualizes an aligned tandem repeat matrix as a colored tile graph.
@@ -33,7 +48,6 @@ encoded_trs <- c("AABA", "ABA", "BAC")
 alignment <- alignTRs(encoded_trs)
 plotTR(alignment, motif_map)
 }
-
 
 }
 \references{

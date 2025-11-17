@@ -34,3 +34,11 @@
 #' Advances 3, (2023).
 
 "motifs_SOL1"
+
+#' Default TRskim color palette (colorblind-safe)
+#'
+#' A vector of 66 distinct colors used by `plotTR()`
+#' when no palette is supplied.
+#'
+#' @format A character vector of hex color codes.
+"default_palette"
