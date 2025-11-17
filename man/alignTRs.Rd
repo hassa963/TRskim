@@ -18,6 +18,42 @@ motif position.
 Aligns multiple encoded tandem repeat sequences by motif using a simple
 progressive pairwise alignment algorithm
 }
+\details{
+\strong{Algorithm:}
+The function uses progressive alignment with the following strategy:
+\enumerate{
+\item Sequences are sorted by length (longest first)
+\item The longest sequence initializes the alignment profile
+\item Shorter sequences are progressively aligned to the growing profile
+\item When gaps are inserted into the profile, all previously aligned sequences
+are updated to maintain column consistency
+\item Leading gap-only columns are removed from the final alignment
+}
+
+\strong{Alignment Method:}
+Pairwise alignments use the Needleman-Wunsch algorithm with:
+\itemize{
+\item Match score: +2
+\item Mismatch penalty: -1
+\item Gap penalty: -2
+}
+
+\strong{Assumptions and Limitations:}
+\itemize{
+\item \strong{Length-based ordering}: Assumes longer sequences are more "complete" and
+should anchor the alignment. This works well for TRs
+where length differences reflect copy number variation.
+\item \strong{Order-independent}: Results depend only on sequence content and lengths,
+not input order.
+\item \strong{Not phylogeny-aware}: Does not consider evolutionary relationships
+between sequences.
+\item \strong{Best for similar sequences}: Works well when sequences share a common
+motif structure with varying copy numbers. May perform poorly on highly
+divergent sequences.
+\item \strong{Small to medium datasets}: Designed for typical TR locus analysis
+(< 100 sequences). For very large datasets, consider specialized MSA tools.
+}
+}
 \examples{
 \dontrun{
 #Example 1

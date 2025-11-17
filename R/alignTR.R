@@ -109,96 +109,127 @@ alignTRs <- function(encoded_trs) {
 
 #### Insert gaps based on profile change ####
 insert_gaps <- function(seq, old_profile, new_profile) {
+
+  # Quick check: if the profile lengths are the same, no gaps were added
   if (length(old_profile) == length(new_profile)) {
     return(seq)
   }
 
+  # Initialize a new sequence vector with the length of the updated profile
   new_seq <- character(length(new_profile))
-  seq_idx <- 1
-  old_idx <- 1
+  seq_idx <- 1 # Position in the old aligned sequence
+  old_idx <- 1 # Position in the old profile
 
+  # Loop through positions in the new profile
   for (new_idx in seq_along(new_profile)) {
+
     if (old_idx <= length(old_profile) && new_profile[new_idx] == old_profile[old_idx]) {
-      # Same position
+
+      # Case 1: Position matches old profile
+      # Copy the corresponding element from the old sequence
       if (seq_idx <= length(seq)) {
         new_seq[new_idx] <- seq[seq_idx]
         seq_idx <- seq_idx + 1
       } else {
+        # If old sequence is exhausted, insert a gap
         new_seq[new_idx] <- "-"
       }
-      old_idx <- old_idx + 1
+      old_idx <- old_idx + 1 # Move to next position in old profile
+
     } else if (new_profile[new_idx] == "-") {
-      # New gap inserted
+      # Case 2: New gap was inserted in the profile
+      # Insert a gap in the aligned sequence
       new_seq[new_idx] <- "-"
+
     } else {
-      # Old had gap here that new doesn't - shouldn't happen
-      # Just advance
+      # Case 3: New profile position doesn't match old profile and isn't a gap
+      # This usually shouldn’t happen
       if (seq_idx <= length(seq)) {
-        new_seq[new_idx] <- seq[seq_idx]
+        new_seq[new_idx] <- seq[seq_idx] # Copy next element from old sequence
         seq_idx <- seq_idx + 1
       } else {
+        # If sequence is exhausted, insert a gap
         new_seq[new_idx] <- "-"
       }
     }
   }
 
+  # Return the updated sequence aligned to the new profile
   return(new_seq)
 }
 
 #### Needleman-Wunsch alignment ####
+#explained to me by Chat Gpt and broken into implementation steps
 align_pair <- function(seq1, seq2) {
-  n <- length(seq1)
-  m <- length(seq2)
+  len_seq1 <- length(seq1)   # Length of first sequence
+  len_seq2 <- length(seq2)   # Length of second sequence
 
+  # --- Scoring parameters ---
   match_score <- 2
   mismatch_score <- -1
   gap_penalty <- -2
 
-  S <- matrix(-Inf, n + 1, m + 1)
-  S[1, 1] <- 0
+  # --- Initialize DP (dynamic programming) matrix ---
+  dp_matrix <- matrix(-Inf, len_seq1 + 1, len_seq2 + 1)
+  dp_matrix[1, 1] <- 0  # Start point
 
-  for (i in 2:(n + 1)) S[i, 1] <- S[i - 1, 1] + gap_penalty
-  for (j in 2:(m + 1)) S[1, j] <- S[1, j - 1] + gap_penalty
+  # Initialize first column (seq2 gaps)
+  for (i in 2:(len_seq1 + 1)){
+    dp_matrix[i, 1] <- dp_matrix[i - 1, 1] + gap_penalty
+  }
+  # Initialize first row (seq1 gaps)
+  for (j in 2:(len_seq2 + 1)){
+     dp_matrix[1, j] <- dp_matrix[1, j - 1] + gap_penalty
+  }
+  # --- Fill DP matrix ---
+  for (i in 2:(len_seq1 + 1)) {
+    for (j in 2:(len_seq2 + 1)) {
+      current_match <- ifelse(seq1[i - 1] == seq2[j - 1],
+                              match_score, mismatch_score)
 
-  for (i in 2:(n + 1)) {
-    for (j in 2:(m + 1)) {
-      match <- ifelse(seq1[i - 1] == seq2[j - 1], match_score, mismatch_score)
-      S[i, j] <- max(
-        S[i - 1, j - 1] + match,
-        S[i - 1, j] + gap_penalty,
-        S[i, j - 1] + gap_penalty
+      # Choose the best score among diagonal, up, and left moves
+      dp_matrix[i, j] <- max(
+        dp_matrix[i - 1, j - 1] + current_match,  # diagonal
+        dp_matrix[i - 1, j] + gap_penalty,       # up (gap in seq2)
+        dp_matrix[i, j - 1] + gap_penalty        # left (gap in seq1)
       )
     }
   }
 
-  i <- n + 1
-  j <- m + 1
-  aln1 <- character(0)
-  aln2 <- character(0)
+  # --- Traceback to recover alignment ---
+  i <- len_seq1 + 1
+  j <- len_seq2 + 1
+  aligned_seq1 <- character(0)
+  aligned_seq2 <- character(0)
 
   while (i > 1 || j > 1) {
     if (i > 1 && j > 1) {
-      match <- ifelse(seq1[i - 1] == seq2[j - 1], match_score, mismatch_score)
-      if (abs(S[i, j] - (S[i - 1, j - 1] + match)) < 1e-10) {
-        aln1 <- c(seq1[i - 1], aln1)
-        aln2 <- c(seq2[j - 1], aln2)
+      current_match <- ifelse(seq1[i - 1] == seq2[j - 1], match_score,
+                              mismatch_score)
+      # Check if current cell came from diagonal
+      if (abs(dp_matrix[i, j] - (dp_matrix[i - 1, j - 1] +
+                                 current_match)) < 1e-10) {
+        aligned_seq1 <- c(seq1[i - 1], aligned_seq1)
+        aligned_seq2 <- c(seq2[j - 1], aligned_seq2)
         i <- i - 1
         j <- j - 1
         next
       }
     }
-    if (i > 1 && abs(S[i, j] - (S[i - 1, j] + gap_penalty)) < 1e-10) {
-      aln1 <- c(seq1[i - 1], aln1)
-      aln2 <- c("-", aln2)
+
+    # Check if current cell came from up (gap in seq2)
+    if (i > 1 && abs(dp_matrix[i, j] - (dp_matrix[i - 1, j] + gap_penalty)) < 1e-10) {
+      aligned_seq1 <- c(seq1[i - 1], aligned_seq1)
+      aligned_seq2 <- c("-", aligned_seq2)
       i <- i - 1
     } else if (j > 1) {
-      aln1 <- c("-", aln1)
-      aln2 <- c(seq2[j - 1], aln2)
+      # Otherwise, must have come from left (gap in seq1)
+      aligned_seq1 <- c("-", aligned_seq1)
+      aligned_seq2 <- c(seq2[j - 1], aligned_seq2)
       j <- j - 1
     }
   }
 
-  return(list(seq1 = aln1, seq2 = aln2))
+  # Return aligned sequences as a list
+  return(list(seq1 = aligned_seq1, seq2 = aligned_seq2))
 }
-
-
