@@ -81,3 +81,5 @@ encodeTRs <- function(decomposed_TRs, motifs){
 
   return(list(encoded = encoded, map = motif_map))
 }
+
+#[END]

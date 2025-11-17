@@ -8,6 +8,35 @@
 #' @returns A character matrix representing the aligned tandem repeats, where
 #'   each row corresponds to an input sequence and each column to an aligned
 #'   motif position.
+#' @details
+#' **Algorithm:**
+#' The function uses progressive alignment with the following strategy:
+#' 1. Sequences are sorted by length (longest first)
+#' 2. The longest sequence initializes the alignment profile
+#' 3. Shorter sequences are progressively aligned to the growing profile
+#' 4. When gaps are inserted into the profile, all previously aligned sequences
+#'    are updated to maintain column consistency
+#' 5. Leading gap-only columns are removed from the final alignment
+#'
+#' **Alignment Method:**
+#' Pairwise alignments use the Needleman-Wunsch algorithm with:
+#' - Match score: +2
+#' - Mismatch penalty: -1
+#' - Gap penalty: -2
+#'
+#'  **Assumptions and Limitations:**
+#' - **Length-based ordering**: Assumes longer sequences are more "complete" and
+#'   should anchor the alignment. This works well for TRs
+#'   where length differences reflect copy number variation.
+#' - **Order-independent**: Results depend only on sequence content and lengths,
+#'   not input order.
+#' - **Not phylogeny-aware**: Does not consider evolutionary relationships
+#' between sequences.
+#' - **Best for similar sequences**: Works well when sequences share a common
+#' motif structure with varying copy numbers. May perform poorly on highly
+#' divergent sequences.
+#' - **Small to medium datasets**: Designed for typical TR locus analysis
+#'   (< 100 sequences). For very large datasets, consider specialized MSA tools.
 #'
 #' @examples
 #' \dontrun{
@@ -30,109 +59,146 @@
 
 ### was given a skeleton to perform multiple sequence alignmentfrom by chat GPT
 #and then filled it in
-alignTRs <- function(encoded_trs){
-  # Split each string into vector of symbols
+#### Progressive Alignment by Length ####
+
+alignTRs <- function(encoded_trs) {
   seqs <- lapply(encoded_trs, function(x) strsplit(x, "")[[1]])
 
-  # Initialize aligned sequences with the first
-  aligned_seqs <- list(seqs[[1]])
+  # Order by length (longest first) - but keep track of original order
+  lengths <- sapply(seqs, length)
+  order_idx <- order(lengths, decreasing = TRUE)
 
-  for(k in 2:length(seqs)){
-    # Align the new sequence to the consensus so far
-    new_aln <- align_pair(aligned_seqs[[1]], seqs[[k]])
+  # Start with longest sequence as profile
+  profile <- seqs[[order_idx[1]]]
+  aligned <- vector("list", length(seqs))
+  aligned[[order_idx[1]]] <- profile
 
-    # Update all previously aligned sequences to include new gaps
-    for(i in seq_along(aligned_seqs)){
-      aligned_seqs[[i]] <- insert_gaps(aligned_seqs[[i]], new_aln$seq1,
-                                       aligned_seqs[[1]])
+  # Progressively align shorter sequences
+  for (i in 2:length(order_idx)) {
+    idx <- order_idx[i]
+
+    # Align this sequence to current profile
+    aln <- align_pair(profile, seqs[[idx]])
+
+    # Update all previously aligned sequences with new gaps
+    old_profile <- profile
+    profile <- aln$seq1
+
+    for (j in 1:(i-1)) {
+      prev_idx <- order_idx[j]
+      aligned[[prev_idx]] <- insert_gaps(aligned[[prev_idx]], old_profile, profile)
     }
 
-    # Add the new aligned sequence
-    aligned_seqs[[k]] <- new_aln$seq2
-
-    # Update the reference for next round
-    aligned_seqs[[1]] <- new_aln$seq1
+    # Store newly aligned sequence
+    aligned[[idx]] <- aln$seq2
   }
 
-  # Convert to a matrix
-  aln_matrix <- do.call(rbind, aligned_seqs)
+  # Convert to matrix
+  aln_matrix <- do.call(rbind, aligned)
   rownames(aln_matrix) <- paste0("TR", seq_along(encoded_trs))
+
+  # Remove leading all-gap columns
+  has_content <- apply(aln_matrix, 2, function(col) any(col != "-"))
+  if (any(has_content)) {
+    first <- which(has_content)[1]
+    aln_matrix <- aln_matrix[, first:ncol(aln_matrix), drop = FALSE]
+  }
+
   return(aln_matrix)
 }
 
-#### helpers ####
-score <- function(a, b) {
-  if(a == b) return(2)
-  if(a == "-" || b == "-") return(-2)
-  return(-1)
+#### Insert gaps based on profile change ####
+insert_gaps <- function(seq, old_profile, new_profile) {
+  if (length(old_profile) == length(new_profile)) {
+    return(seq)
+  }
+
+  new_seq <- character(length(new_profile))
+  seq_idx <- 1
+  old_idx <- 1
+
+  for (new_idx in seq_along(new_profile)) {
+    if (old_idx <= length(old_profile) && new_profile[new_idx] == old_profile[old_idx]) {
+      # Same position
+      if (seq_idx <= length(seq)) {
+        new_seq[new_idx] <- seq[seq_idx]
+        seq_idx <- seq_idx + 1
+      } else {
+        new_seq[new_idx] <- "-"
+      }
+      old_idx <- old_idx + 1
+    } else if (new_profile[new_idx] == "-") {
+      # New gap inserted
+      new_seq[new_idx] <- "-"
+    } else {
+      # Old had gap here that new doesn't - shouldn't happen
+      # Just advance
+      if (seq_idx <= length(seq)) {
+        new_seq[new_idx] <- seq[seq_idx]
+        seq_idx <- seq_idx + 1
+      } else {
+        new_seq[new_idx] <- "-"
+      }
+    }
+  }
+
+  return(new_seq)
 }
 
-### was given a skeleton to perform multiple sequence alignment from chat GPT
-#and then filled it in
+#### Needleman-Wunsch alignment ####
 align_pair <- function(seq1, seq2) {
   n <- length(seq1)
   m <- length(seq2)
-  S <- matrix(0, n+1, m+1)
-  traceback <- matrix("", n+1, m+1)
 
-  # Initialize
-  S[1,] <- seq(0, -2*m, by=-2)
-  S[,1] <- seq(0, -2*n, by=-2)
-  traceback[1,] <- "left"
-  traceback[,1] <- "up"
-  traceback[1,1] <- "done"
+  match_score <- 2
+  mismatch_score <- -1
+  gap_penalty <- -2
 
-  # Fill DP matrix
-  for(i in 2:(n+1)) {
-    for(j in 2:(m+1)) {
-      scores <- c(
-        S[i-1,j-1] + score(seq1[i-1], seq2[j-1]), # diag
-        S[i-1,j] - 2,  # up (gap in seq2)
-        S[i,j-1] - 2   # left (gap in seq1)
+  S <- matrix(-Inf, n + 1, m + 1)
+  S[1, 1] <- 0
+
+  for (i in 2:(n + 1)) S[i, 1] <- S[i - 1, 1] + gap_penalty
+  for (j in 2:(m + 1)) S[1, j] <- S[1, j - 1] + gap_penalty
+
+  for (i in 2:(n + 1)) {
+    for (j in 2:(m + 1)) {
+      match <- ifelse(seq1[i - 1] == seq2[j - 1], match_score, mismatch_score)
+      S[i, j] <- max(
+        S[i - 1, j - 1] + match,
+        S[i - 1, j] + gap_penalty,
+        S[i, j - 1] + gap_penalty
       )
-      S[i,j] <- max(scores)
-      idx <- which.max(scores)
-      traceback[i,j] <- c("diag","up","left")[idx]
     }
   }
 
-  # Traceback
-  i <- n+1; j <- m+1
-  aln1 <- c(); aln2 <- c()
-  while(traceback[i,j] != "done") {
-    dir <- traceback[i,j]
-    if(dir=="diag"){
-      aln1 <- c(seq1[i-1], aln1)
-      aln2 <- c(seq2[j-1], aln2)
-      i <- i-1; j <- j-1
-    } else if(dir=="up"){
-      aln1 <- c(seq1[i-1], aln1)
+  i <- n + 1
+  j <- m + 1
+  aln1 <- character(0)
+  aln2 <- character(0)
+
+  while (i > 1 || j > 1) {
+    if (i > 1 && j > 1) {
+      match <- ifelse(seq1[i - 1] == seq2[j - 1], match_score, mismatch_score)
+      if (abs(S[i, j] - (S[i - 1, j - 1] + match)) < 1e-10) {
+        aln1 <- c(seq1[i - 1], aln1)
+        aln2 <- c(seq2[j - 1], aln2)
+        i <- i - 1
+        j <- j - 1
+        next
+      }
+    }
+    if (i > 1 && abs(S[i, j] - (S[i - 1, j] + gap_penalty)) < 1e-10) {
+      aln1 <- c(seq1[i - 1], aln1)
       aln2 <- c("-", aln2)
-      i <- i-1
-    } else if(dir=="left"){
+      i <- i - 1
+    } else if (j > 1) {
       aln1 <- c("-", aln1)
-      aln2 <- c(seq2[j-1], aln2)
-      j <- j-1
+      aln2 <- c(seq2[j - 1], aln2)
+      j <- j - 1
     }
   }
-  return(list(seq1 = aln1, seq2 = aln2))
-}
 
-### was given a skeleton to perform multiple sequence alignmentfrom chat GPT and
-#then filled it in
-# Insert gaps from new reference into old sequence
-insert_gaps <- function(seq, new_ref, old_ref){
-  new_seq <- c()
-  j <- 1
-  for(i in seq_along(new_ref)){
-    if(new_ref[i] == "-"){
-      new_seq <- c(new_seq, "-")
-    } else {
-      new_seq <- c(new_seq, seq[j])
-      j <- j + 1
-    }
-  }
-  return(new_seq)
+  return(list(seq1 = aln1, seq2 = aln2))
 }
 
 
