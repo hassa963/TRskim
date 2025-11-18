@@ -1,3 +1,8 @@
+#OpenAI. ChatGPT (GPT-5) large language model (2025).
+# https://chat.openai.com/
+
+#supported by AI to write tests
+
 test_that("decomposeTRs correctly decomposes allele into motif composition", {
   allele <- DNAString("TTTACACGTAC")
   motifs <- DNAStringSet(c("AC", "GT"))

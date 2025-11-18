@@ -1,3 +1,8 @@
+#OpenAI. ChatGPT (GPT-5) large language model (2025).
+# https://chat.openai.com/
+
+#supported by AI to write tests
+
 test_that("encodeTR correctly encodes decomposed motifs", {
   decomposed_TR <- c("AC", "AC", "GT", "AC")
   motifs <- c("AC", "GT")

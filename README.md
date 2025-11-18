@@ -85,18 +85,18 @@ The author of TRskim is Nour Hassan. TRskim contains 4 functions. All of
 which were written by the author and utilizes functions from other
 packages. The algorithm for decomposing the tandem repeats in
 `decomposeTRs` is based on the algorithm from a python library called
-TRviz (Park et al., 2023), and ChatGPT was used to dissect said
+TRviz (Park et al., 2023), and Chat GPT was used to dissect said
 algorithm and create a skeleton for how to implement something similar
 in R. The function also utilizes `Biostrings` by taking in `DNAString`s
 and `DNAStringSet`s and the function `matchPattern()` to identify where
-the motifs match in the allele. For `alignTRs`, ChatGPT was used to
+the motifs match in the allele. For `alignTRs`, Chat GPT was used to
 dissecting logic for aligning tandem repeats by motif. For `plotTR`, the
 ggplot function from `ggplot2`was used to generate a tile plot
 visualization of the tandem repeats and `reshape2` was used to format
-the dataframe. `cowplot` was also used to remove the legend from the
-plot for large data.ChatGPT was also used to debug code for all the
+the data frame. `cowplot` was also used to remove the legend from the
+plot for large data.Chat GPT was used to debug code for all the
 functions and decipher how to generate visualization for the `plotTR`
-function.
+function. Testing was also assisted by Chat GPT.
 
 ## References
 

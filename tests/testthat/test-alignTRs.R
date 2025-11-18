@@ -1,3 +1,8 @@
+#OpenAI. ChatGPT (GPT-5) large language model (2025).
+# https://chat.openai.com/
+
+#supported by AI to write tests
+
 test_that("alignTRs correctly aligns encoded TR sequences", {
   encoded_trs <- c("AABA", "ABA", "BA")
 

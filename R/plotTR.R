@@ -4,6 +4,7 @@
 #'
 #' @param aln_matrix A character matrix returned by alignTRs()
 #' @param motif_map A named character vector mapping encoded letters to motifs
+#' **ALL must be named**
 #' @param colour_palette Vector of colours (default = default_palette)
 #' @param graph_title Plot title
 #' @param title_size Font size for title
@@ -69,6 +70,14 @@ plotTR <- function(aln_matrix,
     stop("Graph type must be one of (tile, bar)", call. = FALSE)
   }
 
+  if(!is.vector(motif_map) || is.null(names(motif_map))){
+    stop("motif_map must be named vector", call. = FALSE)
+  }
+
+  if (any(is.na(names(motif_map)) | names(motif_map) == "")) {
+    stop("Vector is partially named. All elements must have names.")
+  }
+
   # Add column names if missing
   if (is.null(colnames(aln_matrix)) || any(colnames(aln_matrix) == "")) {
     colnames(aln_matrix) <- paste0("Pos", seq_len(ncol(aln_matrix)))
@@ -109,8 +118,6 @@ plotTR <- function(aln_matrix,
       raw_label  # for "-"
     }
   })
-
-
 
   motif_labels <- wrap_label(raw_labels)
 
