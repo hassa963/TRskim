@@ -44,7 +44,8 @@ test_that("encodeTRs errors when decomposed_TRs contains invalid characters", {
   decomposed <- c("AC", "GT", "22")
   expect_error(
     encodeTRs(decomposed, c("AC", "GT")),
-    "decomposed_TRs must contain proper nucleotide characters"  # Updated error message
+    "decomposed_TRs must contain proper nucleotide characters"
+    # Updated error message
   )
 })
 
@@ -132,3 +133,5 @@ test_that("encodeTRs accepts DNAStringSet for motifs", {
   expect_equal(encoded$encoded, expected_encoded)
   expect_equal(encoded$motif_map, expected_map)
 })
+
+#[END]

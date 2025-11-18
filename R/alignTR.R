@@ -62,6 +62,51 @@
 #### Progressive Alignment by Length ####
 
 alignTRs <- function(encoded_trs) {
+  #------------------------------------------------------------
+  # Validate inputs
+  #------------------------------------------------------------
+  if (is.null(encoded_trs)) {
+    stop("encoded_trs cannot be NULL")
+  }
+
+  # Check if empty before conversion
+  if (is.list(encoded_trs) && length(encoded_trs) == 0) {
+    stop("encoded_trs cannot be empty")
+  }
+
+  # Convert list to character vector if needed
+  if (is.list(encoded_trs)) {
+    # Check all elements are character before unlisting
+    if (!all(sapply(encoded_trs, is.character))) {
+      stop("encoded_trs must be a character vector or list of character strings")
+    }
+    encoded_trs <- unlist(encoded_trs)
+  }
+
+  if (!is.character(encoded_trs)) {
+    stop("encoded_trs must be a character vector or list of character strings")
+  }
+
+  if (length(encoded_trs) == 0) {
+    stop("encoded_trs cannot be empty")
+  }
+
+  if (any(!nzchar(encoded_trs))) {
+    stop("encoded_trs cannot contain empty strings")
+  }
+
+  #------------------------------------------------------------
+  # Preserve or create names
+  #------------------------------------------------------------
+  if (is.null(names(encoded_trs))) {
+    tr_names <- paste0("TR", seq_along(encoded_trs))
+  } else {
+    tr_names <- names(encoded_trs)
+  }
+
+  #------------------------------------------------------------
+  # Perform alignment
+  #------------------------------------------------------------
   seqs <- lapply(encoded_trs, function(x) strsplit(x, "")[[1]])
 
   # Order by length (longest first) - but keep track of original order
@@ -74,29 +119,27 @@ alignTRs <- function(encoded_trs) {
   aligned[[order_idx[1]]] <- profile
 
   # Progressively align shorter sequences
-  for (i in 2:length(order_idx)) {
-    idx <- order_idx[i]
-
-    # Align this sequence to current profile
-    aln <- align_pair(profile, seqs[[idx]])
-
-    # Update all previously aligned sequences with new gaps
-    old_profile <- profile
-    profile <- aln$seq1
-
-    for (j in 1:(i-1)) {
-      prev_idx <- order_idx[j]
-      aligned[[prev_idx]] <- insert_gaps(aligned[[prev_idx]], old_profile,
-                                         profile)
+  if (length(order_idx) > 1) {
+    for (i in 2:length(order_idx)) {
+      idx <- order_idx[i]
+      # Align this sequence to current profile
+      aln <- align_pair(profile, seqs[[idx]])
+      # Update all previously aligned sequences with new gaps
+      old_profile <- profile
+      profile <- aln$seq1
+      for (j in 1:(i-1)) {
+        prev_idx <- order_idx[j]
+        aligned[[prev_idx]] <- insert_gaps(aligned[[prev_idx]], old_profile,
+                                           profile)
+      }
+      # Store newly aligned sequence
+      aligned[[idx]] <- aln$seq2
     }
-
-    # Store newly aligned sequence
-    aligned[[idx]] <- aln$seq2
   }
 
   # Convert to matrix
   aln_matrix <- do.call(rbind, aligned)
-  rownames(aln_matrix) <- paste0("TR", seq_along(encoded_trs))
+  rownames(aln_matrix) <- tr_names
 
   # Remove leading all-gap columns
   has_content <- apply(aln_matrix, 2, function(col) any(col != "-"))
@@ -236,3 +279,5 @@ align_pair <- function(seq1, seq2) {
   # Return aligned sequences as a list
   return(list(seq1 = aligned_seq1, seq2 = aligned_seq2))
 }
+
+#[END]

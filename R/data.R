@@ -42,3 +42,5 @@
 #'
 #' @format A character vector of hex color codes.
 "default_palette"
+
+#[END]

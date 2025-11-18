@@ -10,7 +10,7 @@
 #'
 #'@returns
 #' Returns encoded tandem repeats in $encoded either as a list if there is
-#' multiple tandem repeats or as a single string if there is only oneand the
+#' multiple tandem repeats or as a single string if there is only one and the
 #' mapping of the motifs to their symbols in $motif_map
 #'
 #' @examples
