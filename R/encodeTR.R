@@ -3,13 +3,15 @@
 #' A function that encodes decomposed tandem repeats such that each unique
 #' motif is a single character symbol. **MAXIMUM OF 66 ENCODINGS**
 #'
-#' @param decomposed_TRs A character vector containing the decomposed tandem
-#' repeats (ex. "-"  "-"  "AC" "AC" "GT" "AC")
-#' @param motifs  A character vector containing the motifs that may be in the TR
+#' @param decomposed_TRs A list or chracter vector containing the decomposed
+#' tandem repeat(s) (ex."AC" "AC" "GT" "AC")
+#' @param motifs  A character vector containing the motifs that may be
+#' in the TR
 #'
 #'@returns
-#' Returns encoded tandem repeats in $encoded and the
-#' mapping of the motifs to their symbols in $map
+#' Returns encoded tandem repeats in $encoded either as a list if there is
+#' multiple tandem repeats or as a single string if there is only oneand the
+#' mapping of the motifs to their symbols in $motif_map
 #'
 #' @examples
 #' \dontrun{
@@ -31,7 +33,7 @@
 #' [1] "DABAB"
 #'
 #'
-#' $map
+#' $motif_map
 #' AC  GT TTT  CC
 #' "A" "B" "C" "D"
 #' }
@@ -64,9 +66,79 @@
 #'@importFrom stats setNames
 #'@export encodeTRs
 
+#checked chatgpt to figure out best way for encoding
 encodeTRs <- function(decomposed_TRs, motifs){
+  #------------------------------------------------------------
+  # Convert DNAStringSet to character if needed
+  #------------------------------------------------------------
+  if (inherits(motifs, "DNAStringSet") || inherits(motifs, "XStringSet")) {
+    motifs <- as.character(motifs)
+  }
 
+  #------------------------------------------------------------
+  # Validate inputs first (before any cleaning)
+  #------------------------------------------------------------
+  if (is.null(decomposed_TRs)) {
+    stop("decomposed_TRs cannot be NULL")
+  }
+  if (is.null(motifs) || length(motifs) == 0) {
+    stop("motifs cannot be NULL or empty")
+  }
+  if (!is.character(motifs) || !all(is_valid_nt_string(motifs))) {
+    stop("motifs must be of type character with proper nucleotide characters")
+  }
+
+  #------------------------------------------------------------
+  # Clean decomposed_TRs if it is a list
+  #------------------------------------------------------------
+  if (is.list(decomposed_TRs)) {
+    # Identify invalid or empty TR entries
+    invalid_idx <- which(sapply(decomposed_TRs, function(tr) {
+      length(tr) == 0 || all(!nzchar(tr)) || any(!is_valid_nt_string(tr))
+    }))
+    # Warn the user if any were removed
+    if (length(invalid_idx) > 0) {
+      warning(sprintf(
+        "Removed %d invalid or empty TR entries at positions: %s",
+        length(invalid_idx),
+        paste(invalid_idx, collapse = ", ")
+      ))
+      # Keep only valid TR entries
+      decomposed_TRs <- decomposed_TRs[-invalid_idx]
+    }
+    # If everything was removed
+    if (length(decomposed_TRs) == 0) {
+      stop("All decomposed_TRs entries were empty or invalid.")
+    }
+  }
+
+  #------------------------------------------------------------
+  # Validate decomposed_TRs after cleaning
+  #------------------------------------------------------------
+  # Check if it's a character vector or list of character vectors
+  if (is.list(decomposed_TRs)) {
+    # Validate each element in the list
+    if (!all(sapply(decomposed_TRs, function(tr) {
+      is.character(tr) && all(is_valid_nt_string(tr))
+    }))) {
+      stop("All elements in decomposed_TRs list must be character vectors with proper nucleotide characters")
+    }
+  } else if (is.character(decomposed_TRs)) {
+    # Single character vector
+    if (!all(is_valid_nt_string(decomposed_TRs))) {
+      stop("decomposed_TRs must contain proper nucleotide characters")
+    }
+  } else {
+    stop("decomposed_TRs must be a character vector or list of character vectors")
+  }
+
+  #------------------------------------------------------------
+  # Encode
+  #------------------------------------------------------------
   symbols <- c(LETTERS, letters, 0:9, "!", "@", "#", "$")
+  if (length(motifs) > length(symbols)){
+    stop("Too many motifs to encode (maximum ", length(symbols), ")")
+  }
   motif_map <- setNames(symbols[seq_along(motifs)], motifs)
 
   # Wrap single TR in a list for uniform processing
@@ -79,7 +151,6 @@ encodeTRs <- function(decomposed_TRs, motifs){
   # Return single string if input was a single TR
   if(is_single) encoded <- encoded[[1]]
 
-  return(list(encoded = encoded, map = motif_map))
+  return(list(encoded = encoded, motif_map = motif_map))
 }
-
 #[END]

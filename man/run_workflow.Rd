@@ -30,8 +30,3 @@ plot visualization ($tile_plot) of the TRskim package work flow.
 \description{
 A function that performs all the steps of the TRskim workflow
 }
-\references{
-Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
-manipulation of biological strings (R package version 2.77.2, 2025).
-https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
-}

@@ -11,11 +11,6 @@
 #' @param allowance is the number of mismatches between the motif
 #' and the sequence permitted to be still be later encoded as a motif. By
 #' default this is 0
-#' @references
-#' Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
-#' manipulation of biological strings (R package version 2.77.2, 2025).
-#' https://bioconductor.org/packages/Biostrings, doi:10.18129/B9.bioc.Biostrings
-#'
 #' @return The function returns a list containing the decompositions
 #'  ($decomposition), encodings ($encoded), motif map ($motif_map)
 #'  alignment matrix ($alignment), bar plot visualization ($bar_plot) and tile
@@ -25,33 +20,6 @@
 
 run_workflow <- function(alleles, motifs, match_score = 1,
                          indel = -1, allowance = 0){
-
-  #------------------------------------------------------------
-  # Normalize alleles
-  #------------------------------------------------------------
-  #used classes from biostrings
-  if (is.character(alleles)) {
-    if (length(alleles) == 1) {
-      alleles <- Biostrings::DNAString(alleles)      # single string
-    } else {
-      alleles <- Biostrings::DNAStringSet(alleles)   # vector of strings
-    }
-  }
-
-  if (is.character(motifs)) {
-    motifs <- Biostrings::DNAStringSet(motifs)
-  }
-
-  # Validate inputs
-  if (!inherits(alleles, "DNAString") &&
-     !inherits(alleles, "DNAStringSet")) {
-   stop(
-    "Alleles must be a character string/vector, a DNAString, or a DNAStringSet")
-  }
-
-  if (!inherits(motifs, "DNAStringSet")) {
-    stop("Motifs must be a character vector or a DNAStringSet")
-  }
 
   message("Decomposing tandem repeats...")
 

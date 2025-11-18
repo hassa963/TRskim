@@ -7,14 +7,16 @@
 encodeTRs(decomposed_TRs, motifs)
 }
 \arguments{
-\item{decomposed_TRs}{A character vector containing the decomposed tandem
-repeats (ex. "-"  "-"  "AC" "AC" "GT" "AC")}
+\item{decomposed_TRs}{A list or chracter vector containing the decomposed
+tandem repeat(s) (ex."AC" "AC" "GT" "AC")}
 
-\item{motifs}{A character vector containing the motifs that may be in the TR}
+\item{motifs}{A character vector containing the motifs that may be
+in the TR}
 }
 \value{
-Returns encoded tandem repeats in $encoded and the
-mapping of the motifs to their symbols in $map
+Returns encoded tandem repeats in $encoded either as a list if there is
+multiple tandem repeats or as a single string if there is only oneand the
+mapping of the motifs to their symbols in $motif_map
 }
 \description{
 A function that encodes decomposed tandem repeats such that each unique
@@ -40,7 +42,7 @@ $encoded[[3]]
 [1] "DABAB"
 
 
-$map
+$motif_map
 AC  GT TTT  CC
 "A" "B" "C" "D"
 }

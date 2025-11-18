@@ -21,24 +21,25 @@ test_that("decomposeTRs correctly decomposes mismatched motif sizes", {
 })
 
 test_that("decomposeTRs creates empty character", {
-  allele <-DNAString("TTTACACGTCAC")
+  allele <- DNAString("TTTACACGTCAC")
   motifs <- DNAStringSet(c("GC"))
 
-  result <- decomposeTRs(allele, motifs)
-
+  expect_warning(
+    result <- decomposeTRs(allele, motifs),
+    "No motif matches found in allele"
+  )
   expected <- character(0)
-
   expect_equal(result$compositions, expected)
 
-  allele <-DNAString("G")
+  allele <- DNAString("G")
   motifs <- DNAStringSet(c("GC"))
 
-  result <- decomposeTRs(allele, motifs)
-
+  expect_warning(
+    result <- decomposeTRs(allele, motifs),
+    "No motif matches found in allele"
+  )
   expected <- character(0)
-
   expect_equal(result$compositions, expected)
-
 })
 
 test_that("decomposeTRs prioritizes longer motifs", {
@@ -85,5 +86,11 @@ test_that("decomposeTRs rejects invalid nucleotide characters and empty inputs",
                "Motifs contain invalid nucleotide characters")
 
   expect_error(decomposeTRs(c("ACGT", "A1GT"), c("AC")),
+               "Alleles contain invalid nucleotide characters")
+
+  expect_error(decomposeTRs(c("ACGT", ""), c("AC")),
+               "Alleles contain invalid nucleotide characters")
+
+  expect_error(decomposeTRs(c("ACGT", ""), c("")),
                "Alleles contain invalid nucleotide characters")
 })

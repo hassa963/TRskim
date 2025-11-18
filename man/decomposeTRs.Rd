@@ -23,7 +23,8 @@ default this is 0}
 }
 \value{
 This function returns the tandem repeat allele(s) as a vector
-decomposed into there motifs as character vectors.
+decomposed into there motifs as character vectors.Except when it's just one
+tandem repeat where $compositions will jus contain the string directly
 For example, the allele \code{"ATATAT"} with motif \code{"AT"} is decomposed
 into \code{c("AT", "AT", "AT")}. And an updated DNAStringSet of mptifs containing
 motifs across all alleles.

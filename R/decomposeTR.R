@@ -95,7 +95,7 @@ decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowance =
 
   # If no motif matches found, return empty output early
   if (is.null(hits_df) || nrow(hits_df) == 0) {
-    message("No motif matches found in allele.")
+    warning("No motif matches found in allele.")
     return(list( composition = character(0),
                  motifs = motifs))
 
@@ -294,7 +294,7 @@ reconstruct <- function(allele_length, traceback, motifs, allele) {
 
 #Validate that is only actualy nucleotide bases
 is_valid_nt_string <- function(x) {
-  return(grepl("^[ACGTURYSWKMBDHVNacgturyswkmbdhvn]+$", x))
+  return(nzchar(x) & grepl("^[ACGTURYSWKMBDHVNacgturyswkmbdhvn]+$", x))
 }
 ###User function####
 #' Decomposition of Tandem Repeats
