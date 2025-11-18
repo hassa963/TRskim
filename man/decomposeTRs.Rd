@@ -75,7 +75,7 @@ composition <- decomposeTRs(allele, motifs)
 composition
 
 ###Expected
-$compositions[[1]]
+$compositions
 [1] "TTT" "AC" "AC" "GTC" "AC"
 $motifs
 DNAStringSet object of length 3:

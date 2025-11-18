@@ -1,32 +1,89 @@
-test_that("decomposeTR correctly decomposes allele into motif composition", {
+test_that("decomposeTRs correctly decomposes allele into motif composition", {
   allele <- DNAString("TTTACACGTAC")
   motifs <- DNAStringSet(c("AC", "GT"))
 
-  result <- decomposeTR(allele, motifs)
+  result <- decomposeTRs(allele, motifs)
 
   expected <- c("TTT", "AC", "AC", "GT", "AC")
 
-  expect_equal(result$composition, expected)
+  expect_equal(result$compositions, expected)
 })
 
-test_that("decomposeTR correctly decomposes mismatched motif sizes", {
+test_that("decomposeTRs correctly decomposes mismatched motif sizes", {
   allele <-DNAString("TTTACACGTCAC")
   motifs <- DNAStringSet(c("AC", "GTC"))
 
-  result <- decomposeTR(allele, motifs)
+  result <- decomposeTRs(allele, motifs)
 
   expected <- c("TTT", "AC", "AC", "GTC", "AC")
 
-  expect_equal(result$composition, expected)
+  expect_equal(result$compositions, expected)
 })
 
-test_that("decomposeTR creates empty character", {
+test_that("decomposeTRs creates empty character", {
   allele <-DNAString("TTTACACGTCAC")
   motifs <- DNAStringSet(c("GC"))
 
-  result <- decomposeTR(allele, motifs)
+  result <- decomposeTRs(allele, motifs)
 
   expected <- character(0)
 
-  expect_equal(result, expected)
+  expect_equal(result$compositions, expected)
+
+  allele <-DNAString("G")
+  motifs <- DNAStringSet(c("GC"))
+
+  result <- decomposeTRs(allele, motifs)
+
+  expected <- character(0)
+
+  expect_equal(result$compositions, expected)
+
+})
+
+test_that("decomposeTRs prioritizes longer motifs", {
+  allele <-DNAString("ATATATAT")
+  motifs <- DNAStringSet(c("AT", "ATAT"))
+
+  result <- decomposeTRs(allele, motifs)
+
+  expected <- c("ATAT", "ATAT")
+
+  expect_equal(result$compositions, expected)
+})
+
+test_that("decomposeTRs takes in character vectors", {
+  allele <-"ATATATAT"
+  motifs <- c("AT", "ATAT")
+
+  result <- decomposeTRs(allele, motifs)
+
+  expected <- c("ATAT", "ATAT")
+
+  expect_equal(result$compositions, expected)
+})
+
+test_that("decomposeTRs rejects invalid nucleotide characters and empty inputs",
+          {
+
+  expect_error(decomposeTRs("AC1T", c("AC")),
+               "Alleles contain invalid nucleotide characters")
+
+  expect_error(decomposeTRs(NULL, c("AC")),
+               "Alleles cannot be NULL or empty")
+
+  expect_error(decomposeTRs("ACT", NULL),
+               "Motifs cannot be NULL or empty")
+
+  expect_error(decomposeTRs("ACT", c()),
+               "Motifs cannot be NULL or empty")
+
+  expect_error(decomposeTRs(c(), c("AC")),
+               "Alleles cannot be NULL or empty")
+
+  expect_error(decomposeTRs(c("ACGT", "ACGT"), c("4C")),
+               "Motifs contain invalid nucleotide characters")
+
+  expect_error(decomposeTRs(c("ACGT", "A1GT"), c("AC")),
+               "Alleles contain invalid nucleotide characters")
 })

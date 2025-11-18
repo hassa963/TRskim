@@ -24,8 +24,8 @@ default this is 0}
 \value{
 The function returns a list containing the decompositions
 ($decomposition), encodings ($encoded), motif map ($motif_map)
-alignment matrix ($alignment), and tile plot visualization ($tile_plot) of
-the TRskim package work flow.
+alignment matrix ($alignment), bar plot visualization ($bar_plot) and tile
+plot visualization ($tile_plot) of the TRskim package work flow.
 }
 \description{
 A function that performs all the steps of the TRskim workflow
