@@ -11,6 +11,9 @@
 #' @param legend_size Font size for legend
 #' @param show_motifs  Whether or not user wants actual motif or encoded motif
 #' in their legend
+#' @param graph_type The user can select the type of visualization they want
+#' for the plot so that it can either be a tile plot using the argument "tile"
+#' or a bar plot using the argument "bar"
 #'
 #' @examples
 #' \dontrun{
@@ -47,7 +50,8 @@ plotTR <- function(aln_matrix,
                    title_size = 10,
                    axis_size = 8,
                    legend_size = 8,
-                   show_motifs = TRUE
+                   show_motifs = TRUE,
+                   graph_type = "tile"
 ) {
 
   ## -------------------------- ##
@@ -61,11 +65,16 @@ plotTR <- function(aln_matrix,
     stop("aln_matrix must contain character motif codes.", call. = FALSE)
   }
 
+  if(graph_type != "tile" & graph_type != "bar" ){
+    stop("Graph type must be one of (tile, bar)", call. = FALSE)
+  }
+
   # Add column names if missing
   if (is.null(colnames(aln_matrix)) || any(colnames(aln_matrix) == "")) {
     colnames(aln_matrix) <- paste0("Pos", seq_len(ncol(aln_matrix)))
   }
 
+  if(graph_type == "tile"){
   ## -------------------------- ##
   ## Data reshaping
   ## -------------------------- ##
@@ -139,7 +148,23 @@ plotTR <- function(aln_matrix,
       plot.title = element_text(size = title_size, face = "bold", hjust = 0.5)
     )
 
-  return(tr_plot)
+  return(tr_plot) }
+
+  if(graph_type == "bar"){
+
+    tr_bar_plot <- bar_plot( aln_matrix = aln_matrix,
+      motif_map = motif_map,
+      colour_palette = colour_palette,
+      graph_title = graph_title,
+      title_size = title_size,
+      axis_size = axis_size,
+      legend_size = legend_size,
+      show_motifs = show_motifs
+    )
+
+    return(tr_bar_plot)
+
+  }
 }
 
 # Wrap long labels
@@ -149,4 +174,71 @@ wrap_label <- function(raw_labels) {
     }
     )
 }
+
+bar_plot <- function( aln_matrix, motif_map, colour_palette, graph_title,
+                      title_size, axis_size,legend_size, show_motifs)
+  {
+  ## Reshape
+  aln_df <- as.data.frame(aln_matrix, stringsAsFactors = FALSE)
+  aln_df$TR <- rownames(aln_matrix)
+
+  aln_long <- reshape2::melt(
+    aln_df,
+    id.vars = "TR",
+    variable.name = "Position",
+    value.name = "Motif"
+  )
+
+  ## Remove gaps
+  aln_long <- aln_long[aln_long$Motif != "-", ]
+
+  ## Count motifs per position
+  count_df <- as.data.frame(table(aln_long$Position, aln_long$Motif))
+  colnames(count_df) <- c("Position", "Motif", "Count")
+
+  ## Convert positions like "V1" → 1
+  count_df$Position <- as.integer(gsub("\\D", "", count_df$Position))
+
+  ## Palette
+  motifs <- unique(count_df$Motif)
+  motif_colors <- setNames(colour_palette[seq_along(motifs)], motifs)
+
+  ## LEGEND LABELS
+  motif_labels <- sapply(motifs, function(label) {
+    if (show_motifs && label %in% names(motif_map)) {
+      motif_map[[label]]        # actual sequence
+    } else {
+      label                     # encoded symbol
+    }
+  })
+
+  ## Bar plot
+  bar_p <- ggplot2::ggplot(count_df,
+                       aes(x = Position, y = Count, fill = Motif)) +
+    ggplot2::geom_col(position = "stack", color = "white", linewidth = 0.3) +
+    ggplot2::scale_fill_manual(
+      values = motif_colors,
+      breaks = motifs,
+      labels = motif_labels,
+      drop = FALSE
+    ) +
+    ggplot2::labs(
+      title = graph_title,
+      x = "Position",
+      y = "Motif Count"
+    ) +
+    ggplot2::theme(
+      panel.grid = element_blank(),
+      legend.title = element_blank(),
+      legend.position = "bottom",
+      legend.direction = "horizontal",
+      legend.text = element_text(size = legend_size),
+      axis.title.x = element_text(size = axis_size, face = "bold"),
+      axis.title.y = element_text(size = axis_size, face = "bold"),
+      plot.title = element_text(size = title_size, face = "bold", hjust = 0.5)
+    )
+
+  return(bar_p)
+}
+
 #[END]

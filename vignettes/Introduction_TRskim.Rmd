@@ -81,9 +81,9 @@ produce a tile plot visualization of the alleles
 
 ```{r, fig.width=10, fig.height=6, out.width="100%"}
 library(grid)
-plotTR(aligned_TRs, motif_maps, show_motifs = False)
+plotTR(aligned_TRs, motif_maps, show_motifs = FALSE)
 
-
+plotTR(aligned_TRs, motif_maps, show_motifs = FALSE, graph_type = "bar")
 
 ```
 

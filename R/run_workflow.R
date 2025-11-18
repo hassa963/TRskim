@@ -18,8 +18,8 @@
 #'
 #' @return The function returns a list containing the decompositions
 #'  ($decomposition), encodings ($encoded), motif map ($motif_map)
-#'  alignment matrix ($alignment), and tile plot visualization ($tile_plot) of
-#'  the TRskim package work flow.
+#'  alignment matrix ($alignment), bar plot visualization ($bar_plot) and tile
+#'  plot visualization ($tile_plot) of the TRskim package work flow.
 #'
 #' @export run_workflow
 
@@ -77,6 +77,10 @@ run_workflow <- function(alleles, motifs, match_score = 1,
 
   tile_plot <- plotTR(alignment, motif_map)
 
+  message("Generating Bar plot visualization...")
+
+  bar_p <- plotTR(alignment, motif_map, graph_type = "bar")
+
   message("Workflow complete!")
 
   return(
@@ -85,7 +89,8 @@ run_workflow <- function(alleles, motifs, match_score = 1,
       encoded = encoded,
       alignment = alignment,
       motif_map = motif_map,
-      tile_plot = tile_plot
+      tile_plot = tile_plot,
+      bar_plot = bar_p
     )
   )
 }

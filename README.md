@@ -70,6 +70,9 @@ browseVignettes("TRskim")
 4.  ***plotTR*** for visualizing aligned tandem repeats by their motif
     composition.
 
+5.  ***run_workflow*** for performing all the steps of the TRskim
+    workflow
+
 The package also contains DNAstringSets of tandem repeats and motifs,
 called SOL1 and motifs_SOL1. Refer to package vignette for more details.
 Overview of the package is shown below.

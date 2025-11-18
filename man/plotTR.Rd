@@ -12,7 +12,8 @@ plotTR(
   title_size = 10,
   axis_size = 8,
   legend_size = 8,
-  show_motifs = TRUE
+  show_motifs = TRUE,
+  graph_type = "tile"
 )
 }
 \arguments{
@@ -32,6 +33,10 @@ plotTR(
 
 \item{show_motifs}{Whether or not user wants actual motif or encoded motif
 in their legend}
+
+\item{graph_type}{The user can select the type of visualization they want
+for the plot so that it can either be a tile plot using the argument "tile"
+or a bar plot using the argument "bar"}
 }
 \value{
 A ggplot object, or list(plot, legend) if large = TRUE
