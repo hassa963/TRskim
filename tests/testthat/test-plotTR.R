@@ -3,6 +3,8 @@
 
 #supported by AI to write tests
 
+pdf(NULL) #so plots don't go to pdf
+
 # Test suite for plotTR error handling
 test_that("plotTR validates aln_matrix is a matrix", {
   motif_map <- c(A = "GCTT", B = "TCC", C = "GTG")
@@ -188,3 +190,5 @@ test_that("plotTR handles custom styling parameters", {
     )
   )
 })
+
+#[END]

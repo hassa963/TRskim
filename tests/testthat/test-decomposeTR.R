@@ -99,3 +99,5 @@ test_that("decomposeTRs rejects invalid nucleotide characters and empty inputs",
   expect_error(decomposeTRs(c("ACGT", ""), c("")),
                "Alleles contain invalid nucleotide characters")
 })
+
+#[END]

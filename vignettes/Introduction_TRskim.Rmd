@@ -61,7 +61,7 @@ individual bases.
 encoded <- encodeTRs(decomposed_TRs, motifs)
 
 encoded_TRs <- encoded$encoded
-motif_maps <- encoded$map
+motif_maps <- encoded$motif_map
 
 ```
 

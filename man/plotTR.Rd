@@ -19,7 +19,8 @@ plotTR(
 \arguments{
 \item{aln_matrix}{A character matrix returned by alignTRs()}
 
-\item{motif_map}{A named character vector mapping encoded letters to motifs}
+\item{motif_map}{A named character vector mapping encoded letters to motifs
+\strong{ALL must be named}}
 
 \item{colour_palette}{Vector of colours (default = default_palette)}
 
