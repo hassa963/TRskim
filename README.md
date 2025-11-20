@@ -13,9 +13,9 @@ A tandem repeat visualizer.
 
 `TRskim` is an R package that visualizes tandem repeat composition by
 decomposing sequences into known/novel motifs, encoding then aligning
-them, and generates tile plots to compare motif patterns across alleles.
-The tool is intended for those researching tandem repeats and would like
-to perform a motif composition analysis across alleles.
+them, and generates visualizations to compare motif patterns across
+alleles. The tool is intended for those researching tandem repeats and
+would like to perform a motif composition analysis across alleles.
 
 TRskim provides motif-level decomposition and visualization of tandem
 repeats, enabling researchers to inspect the internal structure of
