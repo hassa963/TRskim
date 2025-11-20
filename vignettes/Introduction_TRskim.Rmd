@@ -16,7 +16,14 @@ knitr::opts_chunk$set(
 
 ## Introduction 
 
-**TRskim** is an R package for tandem repeat visualization 
+`TRskim` is an R package designed for motif-level visualization and comparison 
+of tandem repeat (TR) sequences. Tandem repeats consist of directly adjacent 
+copies of short DNA motifs, and variation in motif composition between alleles 
+can be functionally or clinically significant.
+
+To facilitate comparative analysis, `TRskim` decomposes each repeat into its 
+constituent motifs, encodes the sequence based on this motif structure, and 
+performs motif-aware alignment across alleles. 
 
 To download **TRskim**, use the following commands:
 
@@ -32,60 +39,146 @@ To list all functions available in the package:
 library(TRskim)
 ls("package:TRskim")
 ```
-## Decompose Tandem Repeats
+## Decomposition of Tandem Repeats
 
-The function **decomposeTRs** decomposes the alleles into the given motifs and 
-adds new motifs based onn the gaps between the motifs across the alleles.
+`TRskim` uses a dynamic-programming algorithm adapted from the TRviz 
+decomposition strategy described by Park et al. `decomposeTRs()` first uses 
+`Biostrings::matchPattern()` to identify all locations where each supplied motif 
+matches the query allele(s). The allele is then processed from left to right 
+using a dynamic programming (DP) table, where DP[i] stores the best cumulative 
+score for reconstructing the allele up to position i.
+
+At each position, two types of moves are considered:
+
+1. Advance by one base and incur an indel penalty, allowing the algorithm to 
+tolerate interruptions or imperfect structure.
+
+2. Match a motif, which is awarded a score proportional to its length so that 
+longer motifs are preferred. Only perfect motif matches receive a positive 
+score, although approximate matches can still be accepted if the user increases 
+the allowance parameter from its default of 0.
+
+After the DP table is completed, traceback begins at the end of the allele. The 
+traceback pointer indicates whether each step corresponds to a motif match or a 
+gap/indel, and these elements are appended to the composition in reverse order 
+to reconstruct the final motif path. Any remaining unmatched subsequences 
+(i.e., gap segments) are treated as novel repeat units and added to the motif 
+table so that insertions or previously unseen motifs are preserved in the 
+encoded representation. 
 
 ```{r}
-decomposed <- decomposeTRs(SOL1, motifs_SOL1) 
-
-decomposed_TRs <- decomposed$compositions
-motifs <- decomposed$motifs 
-
 # SOL1 is a provided DNAStringSet of 95 Tandem repeat alleles for more details: 
 # ?SOL1
 # motifs_SOL1 is a provided DNAStringSet of 36 motif sequences within the SOL1 
 # alleles for more details:
 # ?motifs_SOL1
+#here default allowance will be 0 and the base match score is 1 and 
+#indel penalty is -1
+decomposed <- decomposeTRs(SOL1, motifs_SOL1) 
 
+decomposed_TRs <- decomposed$compositions
+motifs <- decomposed$motifs 
+
+head(decomposed_TRs[1]) #decompostion of the first of 95 alleles
 ```
+From the decomposition output, we obtain each tandem repeat broken into its 
+underlying motif units, giving us a clear view of the motif composition of each 
+allele. However, when motifs vary in length (or when there are many motifs) this 
+raw representation can be difficult to interpret. To make downstream comparison 
+simpler, we encode each motif as a single-character symbol, producing a compact, 
+easily comparable representation of each allele. This encoding makes differences 
+across alleles immediately visible and greatly facilitates visualization and 
+alignment
 
 ## Encode Tandem Repeats
 
-The function **encodeTRs** encodes the decompose alleles into one character 
-symbols which allows the alleles to be aligned based on its motifs not the 
-individual bases. 
+The function `encodeTRs()` converts the decomposed alleles into single-character 
+motif symbols, enabling alignment at the motif level rather than at the 
+nucleotide level. This greatly simplifies comparison, as alleles can be aligned 
+according to their motif structure instead of individual bases.
+
+The current implementation relies on a fixed set of available single-character 
+symbols. Consequently, the number of distinct motifs that can be encoded at one 
+time is limited to 66, which may restrict analyses of extremely complex or 
+highly diverse repeat systems. In practice, however, most tandem repeats contain 
+far fewer unique motifs, so this limit is sufficient for the vast majority of 
+use cases. 
 
 ```{r}
 encoded <- encodeTRs(decomposed_TRs, motifs)
 
-encoded_TRs <- encoded$encoded
-motif_maps <- encoded$motif_map
+encoded_TRs <- encoded$encoded #the encoded alleles
+motif_maps <- encoded$motif_map # maps the motif to its one character symbol 
+
+head(encoded_TRs[1]) 
+
+head(motif_maps)
+
 
 ```
+The output above makes interpreting and aligning motif compositions much easier 
+than working directly with the raw decomposition. At the same time, the returned
+`motif_map` still allows you to inspect the underlying motif sequences whenever 
+needed.
 
 ## Align Tandem Repeats
 
-The function **alignTRs** is a function that uses progressive alignment to align 
-the tandem repeats my their motif composition
+The function `alignTRs` performs multiple sequence alignment of encoded tandem repeat alleles using a progressive, length-based strategy. Sequences are first sorted from longest to shortest under the assumption that longer TRs are more complete and therefore provide a more informative initial reference. The longest sequence initializes the alignment profile, and each subsequent sequence is globally aligned to this profile using the Needleman–Wunsch algorithm (match = +2, mismatch = –1, gap = –2). Whenever gaps are introduced into the profile during pairwise alignment, all previously aligned sequences are updated to maintain consistent column structure. Once all sequences have been incorporated, the final alignment is returned as a character matrix, and any leading all-gap columns introduced during alignment are removed.
 
 ```{r}
 aligned_TRs <- alignTRs(encoded_TRs)
+
+head(aligned_TRs)
 ```
+This output now allows for direct comparison between alleles as each tandem repeat is aligned relative to each other.  
 
 ## Plot Tandem Repeats 
 
-The function **plotTR** is a function that uses the aligned tandem repeats to 
-produce a tile plot visualization of the alleles 
+The function `plotTR` provides two visualization modes for aligned tandem repeats. When given the alignment matrix, it can generate either (1) a tile plot that displays each motif in its aligned position using color-coded symbols, or (2) a bar plot summarizing the frequency of each motif at every aligned position. These visualizations make it easier to inspect motif organization, compare alleles, and identify structural variation across the tandem repeats. 
 
 ```{r, fig.width=10, fig.height=6, out.width="100%"}
-library(grid)
 plotTR(aligned_TRs, motif_maps, show_motifs = FALSE)
+#The raw raw sequences of the motifs are very long so setting show_motifs to 
+#false reduces the size of the legend
+```
+The visualization represents the motif-level alignment of the tandem repeat 
+alleles. Each row corresponds to a different allele, and each column represents 
+an aligned motif position across all alleles. In this dataset, several regions 
+appear to be highly conserved, shown by columns containing only a single 
+color, indicating that all alleles share the same motif at those positions.
 
+In contrast, the central portion of the alignment shows substantial variability,
+where columns contain many different colors. These positions reflect differences
+in motif type, copy number, or local repeat structure between alleles.
+
+Some columns consist almost entirely of grey tiles except for a single colored 
+motif; these represent insertions present in only one allele. Similarly, 
+stretches of grey within individual rows indicate deletions, where an allele 
+lacks motifs present in others.
+
+Overall, the plot highlights both the conserved and variable regions of the 
+tandem repeat structure, illustrating how alleles differ in motif composition 
+and organization.
+
+```{r barplot, fig.width=10, fig.height=6}
 plotTR(aligned_TRs, motif_maps, show_motifs = FALSE, graph_type = "bar")
 
 ```
+This example includes a large number of alleles, which can make the full tile 
+alignment challenging to interpret. The bar-plot visualization provides a useful
+summary by showing the motif composition at each aligned position. Positions 
+dominated by a single color represent highly conserved motifs, while positions 
+with multiple colors (such as position 17) indicate greater variability or 
+heterogeneity across alleles.
+
+The bar plot also helps highlight potential insertions: for example, positions 4
+and 26 contain only a very small sliver of color, suggesting that only one 
+allele (or a very small subset) contains a motif at that position while the rest
+contain gaps.
+
+Overall, the bar plot complements the tile alignment by offering a concise 
+overview of motif conservation, variation, and the presence of insertions or 
+deletions across the panel of tandem repeat alleles.
 
 ## Package reference 
 
@@ -124,3 +217,5 @@ package version 1.2.0, https://CRAN.R-project.org/package=cowplot (2025)
 ```{r}
 sessionInfo()
 ```
+
+#[END]

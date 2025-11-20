@@ -56,7 +56,7 @@ encoded <- encodeTRs(decomposed_TR, motifs)
 encoded$encoded
 [1] "AABA"
 
-encoded$map
+encoded$motif_map
  AC  GT
 "A" "B"
 

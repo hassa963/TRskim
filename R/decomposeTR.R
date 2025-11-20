@@ -394,7 +394,8 @@ is_valid_nt_string <- function(x) {
 #' @export decomposeTRs
 #'
 #'
-
+#AI was used to understand the TRviz algorithm (Park et al., 2023 ) and
+#decipher the steps to implement it in R
 decomposeTRs <- function(alleles, motifs, match_score = 1,
                          indel = -1, allowance = 0) {
 
