@@ -19,7 +19,7 @@
 #' @examples
 #' \dontrun{
 #' #Example
-#' motif_map <- c(A = "GCTT", B = "TCC", C = "GTG")
+#' motif_map <- c(GCTT = "A", TCC = "B", GTG = "C")
 #' encoded_trs <- c("AABA", "ABA", "BAC")
 #'
 #' alignment <- alignTRs(encoded_trs)
@@ -52,25 +52,24 @@ plotTR <- function(aln_matrix,
                    axis_size = 8,
                    legend_size = 8,
                    show_motifs = TRUE,
-                   graph_type = "tile"
-) {
+                   graph_type = "tile") {
 
   ## -------------------------- ##
   ## Input validation
   ## -------------------------- ##
-  if (!is.matrix(aln_matrix)){
+  if (!is.matrix(aln_matrix)) {
     stop("aln_matrix must be a matrix.", call. = FALSE)
   }
 
-  if (!is.character(aln_matrix)){
+  if (!is.character(aln_matrix)) {
     stop("aln_matrix must contain character motif codes.", call. = FALSE)
   }
 
-  if(graph_type != "tile" & graph_type != "bar" ){
+  if (graph_type != "tile" & graph_type != "bar") {
     stop("Graph type must be one of (tile, bar)", call. = FALSE)
   }
 
-  if(!is.vector(motif_map) || is.null(names(motif_map))){
+  if (!is.vector(motif_map) || is.null(names(motif_map))) {
     stop("motif_map must be named vector", call. = FALSE)
   }
 
@@ -83,83 +82,92 @@ plotTR <- function(aln_matrix,
     colnames(aln_matrix) <- paste0("Pos", seq_len(ncol(aln_matrix)))
   }
 
-  if(graph_type == "tile"){
   ## -------------------------- ##
-  ## Data reshaping
+  ## Create reverse lookup: symbol -> motif
+  ## motif_map is c(AC = "A", GT = "B")
+  ## reverse_map becomes c(A = "AC", B = "GT")
   ## -------------------------- ##
-  aln_df <- as.data.frame(aln_matrix, stringsAsFactors = FALSE)
-  aln_df$TR <- rownames(aln_matrix)
+  reverse_map <- setNames(names(motif_map), motif_map)
 
-  aln_long <- reshape2::melt(
-    aln_df,
-    id.vars = "TR",
-    variable.name = "Position",
-    value.name = "Motif"
-  )
+  if (graph_type == "tile") {
+    ## -------------------------- ##
+    ## Data reshaping
+    ## -------------------------- ##
+    aln_df <- as.data.frame(aln_matrix, stringsAsFactors = FALSE)
+    aln_df$TR <- rownames(aln_matrix)
 
-  aln_long$Position <- as.integer(gsub("\\D", "", aln_long$Position))
-
-  ## -------------------------- ##
-  ## Palette + legend labels
-  ## -------------------------- ##
-  motifs <- unique(aln_long$Motif)
-  motif_colors <- setNames(colour_palette[seq_along(motifs)], motifs)
-  motif_colors["-"] <- "grey90"
-
-  # Decide what legend labels to show
-  raw_labels <- sapply(names(motif_colors), function(raw_label) {
-    if (raw_label %in% names(motif_map)) {
-      if (show_motifs) {
-        motif_map[[raw_label]]   # show full motif sequence
-      } else {
-        raw_label               # show encoded letter
-      }
-    } else {
-      raw_label  # for "-"
-    }
-  })
-
-  motif_labels <- wrap_label(raw_labels)
-
-  ## -------------------------- ##
-  ## Plot construction
-  ## -------------------------- ##
-  tr_plot <- ggplot2::ggplot(aln_long, aes(x = Position, y = TR, fill = Motif)) +
-    ggplot2::geom_tile(color = "white", linewidth = 0.4) +
-    ggplot2::scale_fill_manual(
-      values = motif_colors,
-      breaks = names(motif_colors),
-      labels = motif_labels,
-      drop = FALSE,
-      guide = guide_legend(
-        keywidth = unit(0.5, "lines"),
-        keyheight = unit(0.5, "lines")
-      )
-    ) +
-    ggplot2::labs(
-      title = graph_title,
-      x = "Position",
-      y = "Alleles"
-    ) +
-    ggplot2::theme(
-      panel.grid = element_blank(),
-      legend.title = element_blank(),
-      legend.position = "bottom",
-      legend.direction = "horizontal",
-      legend.text = element_text(size = legend_size),
-      legend.key.size = unit(0.3, "lines"),
-      axis.title.x = element_text(size = axis_size, face = "bold"),
-      axis.title.y = element_text(size = axis_size, face = "bold"),
-      axis.text.y = element_blank(),
-      axis.ticks.y = element_blank(),
-      plot.title = element_text(size = title_size, face = "bold", hjust = 0.5)
+    aln_long <- reshape2::melt(
+      aln_df,
+      id.vars = "TR",
+      variable.name = "Position",
+      value.name = "Motif"
     )
 
-  return(tr_plot) }
+    aln_long$Position <- as.integer(gsub("\\D", "", aln_long$Position))
 
-  if(graph_type == "bar"){
+    ## -------------------------- ##
+    ## Palette + legend labels
+    ## -------------------------- ##
+    motifs <- as.character(unique(aln_long$Motif))
+    motif_colors <- setNames(colour_palette[seq_along(motifs)], motifs)
+    motif_colors["-"] <- "grey90"
 
-    tr_bar_plot <- bar_plot( aln_matrix = aln_matrix,
+    # raw_label is the symbol (A, B, C, -)
+    # Use reverse_map to get actual motif sequence
+    raw_labels <- sapply(names(motif_colors), function(raw_label) {
+      if (raw_label %in% names(reverse_map)) {
+        if (show_motifs) {
+          reverse_map[[raw_label]]  # returns the actual motif
+        } else {
+          raw_label
+        }
+      } else {
+        raw_label  # for "-"
+      }
+    })
+
+    motif_labels <- wrap_label(raw_labels)
+
+    ## -------------------------- ##
+    ## Plot construction
+    ## -------------------------- ##
+    tr_plot <- ggplot2::ggplot(aln_long, aes(x = Position, y = TR, fill = Motif)) +
+      ggplot2::geom_tile(color = "white", linewidth = 0.4) +
+      ggplot2::scale_fill_manual(
+        values = motif_colors,
+        breaks = names(motif_colors),
+        labels = motif_labels,
+        drop = FALSE,
+        guide = guide_legend(
+          keywidth = unit(0.5, "lines"),
+          keyheight = unit(0.5, "lines")
+        )
+      ) +
+      ggplot2::labs(
+        title = graph_title,
+        x = "Position",
+        y = "Alleles"
+      ) +
+      ggplot2::theme(
+        panel.grid = element_blank(),
+        legend.title = element_blank(),
+        legend.position = "bottom",
+        legend.direction = "horizontal",
+        legend.text = element_text(size = legend_size),
+        legend.key.size = unit(0.3, "lines"),
+        axis.title.x = element_text(size = axis_size, face = "bold"),
+        axis.title.y = element_text(size = axis_size, face = "bold"),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        plot.title = element_text(size = title_size, face = "bold", hjust = 0.5)
+      )
+
+    return(tr_plot)
+  }
+
+  if (graph_type == "bar") {
+    tr_bar_plot <- bar_plot(
+      aln_matrix = aln_matrix,
       motif_map = motif_map,
       colour_palette = colour_palette,
       graph_title = graph_title,
@@ -170,21 +178,15 @@ plotTR <- function(aln_matrix,
     )
 
     return(tr_bar_plot)
-
   }
 }
 
-# Wrap long labels
-wrap_label <- function(raw_labels) {
-  sapply(raw_labels, function(raw_label){
-    paste(strwrap(raw_label, width = 20), collapse = "\n")
-    }
-    )
-}
+bar_plot <- function(aln_matrix, motif_map, colour_palette, graph_title,
+                     title_size, axis_size, legend_size, show_motifs) {
 
-bar_plot <- function( aln_matrix, motif_map, colour_palette, graph_title,
-                      title_size, axis_size,legend_size, show_motifs)
-  {
+  # Create reverse lookup: symbol -> motif
+  reverse_map <- setNames(names(motif_map), motif_map)
+
   ## Reshape
   aln_df <- as.data.frame(aln_matrix, stringsAsFactors = FALSE)
   aln_df$TR <- rownames(aln_matrix)
@@ -203,25 +205,120 @@ bar_plot <- function( aln_matrix, motif_map, colour_palette, graph_title,
   count_df <- as.data.frame(table(aln_long$Position, aln_long$Motif))
   colnames(count_df) <- c("Position", "Motif", "Count")
 
-  ## Convert positions like "V1" → 1
+  ## Convert positions like "V1" -> 1
   count_df$Position <- as.integer(gsub("\\D", "", count_df$Position))
 
   ## Palette
-  motifs <- unique(count_df$Motif)
+  motifs <- as.character(unique(count_df$Motif))
   motif_colors <- setNames(colour_palette[seq_along(motifs)], motifs)
 
-  ## LEGEND LABELS
-  motif_labels <- sapply(motifs, function(label) {
-    if (show_motifs && label %in% names(motif_map)) {
-      motif_map[[label]]        # actual sequence
+  ## LEGEND LABELS - use reverse_map
+  raw_labels <- sapply(motifs, function(label) {
+    if (label %in% names(reverse_map)) {
+      if (show_motifs) {
+        reverse_map[[label]]
+      } else {
+        label
+      }
     } else {
-      label                     # encoded symbol
+      label
     }
   })
 
+  motif_labels <- wrap_label(raw_labels)
+
   ## Bar plot
-  bar_p <- ggplot2::ggplot(count_df,
-                       aes(x = Position, y = Count, fill = Motif)) +
+  bar_p <- ggplot2::ggplot(
+    count_df,
+    aes(x = Position, y = Count, fill = Motif)
+  ) +
+    ggplot2::geom_col(position = "stack", color = "white", linewidth = 0.3) +
+    ggplot2::scale_fill_manual(
+      values = motif_colors,
+      breaks = motifs,
+      labels = motif_labels,
+      drop = FALSE
+    ) +
+    ggplot2::labs(
+      title = graph_title,
+      x = "Position",
+      y = "Motif Count"
+    ) +
+    ggplot2::theme(
+      panel.grid = element_blank(),
+      legend.title = element_blank(),
+      legend.position = "bottom",
+      legend.direction = "horizontal",
+      legend.text = element_text(size = legend_size),
+      axis.title.x = element_text(size = axis_size, face = "bold"),
+      axis.title.y = element_text(size = axis_size, face = "bold"),
+      plot.title = element_text(size = title_size, face = "bold", hjust = 0.5)
+    )
+
+  return(bar_p)
+}
+
+# Wrap long labels
+wrap_label <- function(raw_labels) {
+  sapply(raw_labels, function(raw_label) {
+    paste(strwrap(raw_label, width = 20), collapse = "\n")
+  })
+}
+# [END]
+
+bar_plot <- function(aln_matrix, motif_map, colour_palette, graph_title,
+                     title_size, axis_size, legend_size, show_motifs) {
+
+  # Create reverse lookup: symbol -> motif
+  # motif_map is c("ACGT..." = "A", "GCTT..." = "B")
+  # reverse_map becomes c(A = "ACGT...", B = "GCTT...")
+  reverse_map <- setNames(names(motif_map), motif_map)
+
+  ## Reshape
+  aln_df <- as.data.frame(aln_matrix, stringsAsFactors = FALSE)
+  aln_df$TR <- rownames(aln_matrix)
+
+  aln_long <- reshape2::melt(
+    aln_df,
+    id.vars = "TR",
+    variable.name = "Position",
+    value.name = "Motif"
+  )
+
+  ## Remove gaps
+  aln_long <- aln_long[aln_long$Motif != "-", ]
+
+  ## Count motifs per position
+  count_df <- as.data.frame(table(aln_long$Position, aln_long$Motif))
+  colnames(count_df) <- c("Position", "Motif", "Count")
+
+  ## Convert positions like "V1" -> 1
+  count_df$Position <- as.integer(gsub("\\D", "", count_df$Position))
+
+  ## Palette
+  motifs <- as.character(unique(count_df$Motif))
+  motif_colors <- setNames(colour_palette[seq_along(motifs)], motifs)
+
+  ## LEGEND LABELS - use reverse_map
+  raw_labels <- sapply(motifs, function(label) {
+    if (label %in% names(reverse_map)) {
+      if (show_motifs) {
+        reverse_map[[label]]
+      } else {
+        label
+      }
+    } else {
+      label
+    }
+  })
+
+  motif_labels <- wrap_label(raw_labels)
+
+  ## Bar plot
+  bar_p <- ggplot2::ggplot(
+    count_df,
+    aes(x = Position, y = Count, fill = Motif)
+  ) +
     ggplot2::geom_col(position = "stack", color = "white", linewidth = 0.3) +
     ggplot2::scale_fill_manual(
       values = motif_colors,

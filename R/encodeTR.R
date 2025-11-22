@@ -5,7 +5,7 @@
 #'
 #' @param decomposed_TRs A list or chracter vector containing the decomposed
 #' tandem repeat(s) (ex."AC" "AC" "GT" "AC")
-#' @param motifs  A character vector containing the motifs that may be
+#' @param motifs  A character vector or DNAStringSet containing the motifs that may be
 #' in the TR
 #'
 #'@returns
@@ -67,7 +67,7 @@
 #'@export encodeTRs
 
 #checked chatgpt to figure out best way for encoding
-encodeTRs <- function(decomposed_TRs, motifs){
+encodeTRs <- function(decomposed_TRs, motifs) {
   #------------------------------------------------------------
   # Convert DNAStringSet to character if needed
   #------------------------------------------------------------
@@ -92,21 +92,17 @@ encodeTRs <- function(decomposed_TRs, motifs){
   # Clean decomposed_TRs if it is a list
   #------------------------------------------------------------
   if (is.list(decomposed_TRs)) {
-    # Identify invalid or empty TR entries
     invalid_idx <- which(sapply(decomposed_TRs, function(tr) {
       length(tr) == 0 || all(!nzchar(tr)) || any(!is_valid_nt_string(tr))
     }))
-    # Warn the user if any were removed
     if (length(invalid_idx) > 0) {
       warning(sprintf(
         "Removed %d invalid or empty TR entries at positions: %s",
         length(invalid_idx),
         paste(invalid_idx, collapse = ", ")
       ))
-      # Keep only valid TR entries
       decomposed_TRs <- decomposed_TRs[-invalid_idx]
     }
-    # If everything was removed
     if (length(decomposed_TRs) == 0) {
       stop("All decomposed_TRs entries were empty or invalid.")
     }
@@ -115,16 +111,13 @@ encodeTRs <- function(decomposed_TRs, motifs){
   #------------------------------------------------------------
   # Validate decomposed_TRs after cleaning
   #------------------------------------------------------------
-  # Check if it's a character vector or list of character vectors
   if (is.list(decomposed_TRs)) {
-    # Validate each element in the list
     if (!all(sapply(decomposed_TRs, function(tr) {
       is.character(tr) && all(is_valid_nt_string(tr))
     }))) {
       stop("All elements in decomposed_TRs list must be character vectors with proper nucleotide characters")
     }
   } else if (is.character(decomposed_TRs)) {
-    # Single character vector
     if (!all(is_valid_nt_string(decomposed_TRs))) {
       stop("decomposed_TRs must contain proper nucleotide characters")
     }
@@ -136,21 +129,22 @@ encodeTRs <- function(decomposed_TRs, motifs){
   # Encode
   #------------------------------------------------------------
   symbols <- c(LETTERS, letters, 0:9, "!", "@", "#", "$")
-  if (length(motifs) > length(symbols)){
+  if (length(motifs) > length(symbols)) {
     stop("Too many motifs to encode (maximum ", length(symbols), ")")
   }
+
   motif_map <- setNames(symbols[seq_along(motifs)], motifs)
 
   # Wrap single TR in a list for uniform processing
   is_single <- is.character(decomposed_TRs) && !is.list(decomposed_TRs)
-  tr_list <- if(is_single) list(decomposed_TRs) else decomposed_TRs
+  tr_list <- if (is_single) list(decomposed_TRs) else decomposed_TRs
 
-  # Encode each TR
+  # Encode each TR using motif_map lookup
   encoded <- lapply(tr_list, function(tr) paste0(motif_map[tr], collapse = ""))
 
   # Return single string if input was a single TR
-  if(is_single) encoded <- encoded[[1]]
+  if (is_single) encoded <- encoded[[1]]
 
   return(list(encoded = encoded, motif_map = motif_map))
 }
-#[END]
+# [END]

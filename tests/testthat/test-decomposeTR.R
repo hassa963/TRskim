@@ -100,4 +100,19 @@ test_that("decomposeTRs rejects invalid nucleotide characters and empty inputs",
                "Alleles contain invalid nucleotide characters")
 })
 
+test_that("decomposeTRs returns a single DNAStringSet for motifs", {
+  allele <- DNAString("TTTACACGTAC")
+  motifs <- DNAStringSet(c("AC", "GT"))
+
+  result <- decomposeTRs(allele, motifs)
+
+  # Check that the returned motifs are a DNAStringSet
+  expect_s4_class(result$motifs, "DNAStringSet")
+
+  # Check that it's not a list of DNAStringSets
+  expect_false(is.list(result$motifs) &&
+                 all(sapply(result$motifs, function(x) inherits(x, "DNAStringSet"))))
+
+})
+
 #[END]

@@ -10,7 +10,7 @@ encodeTRs(decomposed_TRs, motifs)
 \item{decomposed_TRs}{A list or chracter vector containing the decomposed
 tandem repeat(s) (ex."AC" "AC" "GT" "AC")}
 
-\item{motifs}{A character vector containing the motifs that may be
+\item{motifs}{A character vector or DNAStringSet containing the motifs that may be
 in the TR}
 }
 \value{

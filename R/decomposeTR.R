@@ -259,7 +259,7 @@ reconstruct <- function(allele_length, traceback, motifs, allele) {
         motif_length <- width(motifs[motif_idx])
 
         # Prepend motif sequence to composition
-        composition <- c(as.character(motifs[motif_idx]), composition)
+        composition <- c(as.character(motifs[[motif_idx]]), composition)
 
         # Move back by motif length
         pos <- pos - motif_length
@@ -311,12 +311,16 @@ is_valid_nt_string <- function(x) {
 #' @param allowance is the number of mismatches between the motif
 #' and the sequence permitted to be still be later encoded as a motif. By
 #' default this is 0
-#' @return This function returns the tandem repeat allele(s) as a vector
-#' decomposed into there motifs as character vectors.Except when it's just one
-#' tandem repeat where $compositions will jus contain the string directly
-#' For example, the allele `"ATATAT"` with motif `"AT"` is decomposed
-#' into `c("AT", "AT", "AT")`. And an updated DNAStringSet of mptifs containing
-#' motifs across all alleles.
+#' @return This function returns the tandem repeat allele(s) decomposed into
+#' their constituent motifs as a character vector. If the allele contains only
+#' one tandem repeat, the `$compositions` element will contain that string
+#' directly rather than a vector of repeated motifs.
+#'
+#' For example, the allele `"ATATAT"` with the motif `"AT"` is decomposed into
+#' `c("AT", "AT", "AT")`.
+#'
+#' The function also returns an updated `DNAStringSet` of motifs that includes
+#' any motifs present across all supplied alleles.
 #'
 #' If no motifs are found in an allele, the function returns `character(0)` for
 #' that allele and prints a message to inform the user.
@@ -457,8 +461,16 @@ decomposeTRs <- function(alleles, motifs, match_score = 1,
   })
 
   all_compositions <- lapply(tandem_repeats, `[[`, "composition")
-  all_motifs <- lapply(tandem_repeats, `[[`, "motifs")
-  combined_motifs <- unique(do.call(c, all_motifs))
+
+  # Collect all unique motifs as characters first
+  all_motif_seqs <- character()
+  for (tr in tandem_repeats) {
+    all_motif_seqs <- c(all_motif_seqs, as.character(tr$motifs))
+  }
+  all_motif_seqs <- unique(all_motif_seqs)
+
+  # Convert back to DNAStringSet
+  combined_motifs <- Biostrings::DNAStringSet(all_motif_seqs)
 
   return(list(
     compositions = all_compositions,

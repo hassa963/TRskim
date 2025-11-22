@@ -22,12 +22,16 @@ and the sequence permitted to be still be later encoded as a motif. By
 default this is 0}
 }
 \value{
-This function returns the tandem repeat allele(s) as a vector
-decomposed into there motifs as character vectors.Except when it's just one
-tandem repeat where $compositions will jus contain the string directly
-For example, the allele \code{"ATATAT"} with motif \code{"AT"} is decomposed
-into \code{c("AT", "AT", "AT")}. And an updated DNAStringSet of mptifs containing
-motifs across all alleles.
+This function returns the tandem repeat allele(s) decomposed into
+their constituent motifs as a character vector. If the allele contains only
+one tandem repeat, the \verb{$compositions} element will contain that string
+directly rather than a vector of repeated motifs.
+
+For example, the allele \code{"ATATAT"} with the motif \code{"AT"} is decomposed into
+\code{c("AT", "AT", "AT")}.
+
+The function also returns an updated \code{DNAStringSet} of motifs that includes
+any motifs present across all supplied alleles.
 
 If no motifs are found in an allele, the function returns \code{character(0)} for
 that allele and prints a message to inform the user.
