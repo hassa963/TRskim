@@ -16,9 +16,9 @@
 #'  alignment matrix ($alignment), bar plot visualization ($bar_plot) and tile
 #'  plot visualization ($tile_plot) of the TRskim package work flow.
 #'
-#' @export run_workflow
+#' @export runWorkflow
 
-run_workflow <- function(alleles, motifs, match_score = 1,
+runWorkflow <- function(alleles, motifs, match_score = 1,
                          indel = -1, allowance = 0){
 
   message("Decomposing tandem repeats...")

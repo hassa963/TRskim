@@ -48,7 +48,7 @@ Visualizes an aligned tandem repeat matrix as a colored tile graph.
 \examples{
 \dontrun{
 #Example
-motif_map <- c(A = "GCTT", B = "TCC", C = "GTG")
+motif_map <- c(GCTT = "A", TCC = "B", GTG = "C")
 encoded_trs <- c("AABA", "ABA", "BAC")
 
 alignment <- alignTRs(encoded_trs)

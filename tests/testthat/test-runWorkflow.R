@@ -1,43 +1,43 @@
 library(testthat)
 
-test_that("run_workflow produces expected messages", {
+test_that("runWorkflow produces expected messages", {
   # Set up test data
   alleles <- c("AGATAGATAGATAGAT", "AGATAGATAGAT", "AGATAGAT")
   motifs <- c("AGAT")
 
   # Capture messages using expect_message
   expect_message(
-    result <- run_workflow(alleles, motifs),
+    result <- runWorkflow(alleles, motifs),
     "Decomposing tandem repeats..."
   )
 
   expect_message(
-    result <- run_workflow(alleles, motifs),
+    result <- runWorkflow(alleles, motifs),
     "Encoding tandem repeats...."
   )
 
   expect_message(
-    result <- run_workflow(alleles, motifs),
+    result <- runWorkflow(alleles, motifs),
     "Aligning tandem repeats...."
   )
 
   expect_message(
-    result <- run_workflow(alleles, motifs),
+    result <- runWorkflow(alleles, motifs),
     "Generating Tile plot visualization..."
   )
 
   expect_message(
-    result <- run_workflow(alleles, motifs),
+    result <- runWorkflow(alleles, motifs),
     "Generating Bar plot visualization..."
   )
 
   expect_message(
-    result <- run_workflow(alleles, motifs),
+    result <- runWorkflow(alleles, motifs),
     "Workflow complete!"
   )
 })
 
-test_that("run_workflow produces all messages in order", {
+test_that("runWorkflow produces all messages in order", {
   alleles <- c("AGATAGATAGATAGAT", "AGATAGATAGAT", "AGATAGAT")
   motifs <- c("AGAT")
 
@@ -45,7 +45,7 @@ test_that("run_workflow produces all messages in order", {
   messages <- character()
 
   result <- withCallingHandlers(
-    run_workflow(alleles, motifs),
+    runWorkflow(alleles, motifs),
     message = function(m) {
       messages <<- c(messages, conditionMessage(m))
     }
@@ -61,12 +61,12 @@ test_that("run_workflow produces all messages in order", {
   expect_match(messages[6], "Workflow complete!")
 })
 
-test_that("run_workflow returns expected list structure", {
+test_that("runWorkflow returns expected list structure", {
   alleles <- c("AGATAGATAGATAGAT", "AGATAGATAGAT", "AGATAGAT")
   motifs <- c("AGAT")
 
   # Suppress messages for cleaner test output
-  result <- suppressMessages(run_workflow(alleles, motifs))
+  result <- suppressMessages(runWorkflow(alleles, motifs))
 
   # Check return structure
   expect_type(result, "list")
@@ -87,13 +87,13 @@ test_that("run_workflow returns expected list structure", {
   expect_true(!is.null(names(result$motif_map)))  # motif_map must be named
 })
 
-test_that("run_workflow passes parameters correctly", {
+test_that("runWorkflow passes parameters correctly", {
   alleles <- c("AGATAGATAGATAGAT", "AGATAGATAGAT", "AGATAGAT")
   motifs <- c("AGAT")
 
   # Test with custom parameters
   result <- suppressMessages(
-    run_workflow(alleles, motifs,
+    runWorkflow(alleles, motifs,
                  match_score = 2,
                  indel = -2,
                  allowance = 1)
@@ -104,12 +104,12 @@ test_that("run_workflow passes parameters correctly", {
   expect_type(result, "list")
 })
 
-test_that("run_workflow handles edge cases", {
+test_that("runWorkflow handles edge cases", {
   # Single allele
   alleles <- c("AGATAGAT")
   motifs <- c("AGAT")
 
-  result <- suppressMessages(run_workflow(alleles, motifs))
+  result <- suppressMessages(runWorkflow(alleles, motifs))
   expect_true(!is.null(result))
   expect_equal(nrow(result$alignment), 1)
 
@@ -117,16 +117,16 @@ test_that("run_workflow handles edge cases", {
   alleles2 <- c("AGATAGACAGAT", "AGATAGAT", "AGACAGAC")
   motifs2 <- c("AGAT", "AGAC")
 
-  result2 <- suppressMessages(run_workflow(alleles2, motifs2))
+  result2 <- suppressMessages(runWorkflow(alleles2, motifs2))
   expect_true(!is.null(result2))
   expect_true(length(result2$motif_map) >= 2)
 })
 
-test_that("run_workflow produces valid plots", {
+test_that("runWorkflow produces valid plots", {
   alleles <- c("AGATAGATAGATAGAT", "AGATAGATAGAT", "AGATAGAT")
   motifs <- c("AGAT")
 
-  result <- suppressMessages(run_workflow(alleles, motifs))
+  result <- suppressMessages(runWorkflow(alleles, motifs))
 
   # Check plots are ggplot objects
   expect_s3_class(result$tile_plot, "ggplot")
@@ -137,7 +137,7 @@ test_that("run_workflow produces valid plots", {
 })
 
 # Integration test - run the full workflow and verify end-to-end
-test_that("run_workflow integration test", {
+test_that("runWorkflow integration test", {
   # Realistic STR data
   alleles <- c(
     "AGATAGATAGATAGATAGATAGAT",  # 6 repeats
@@ -149,7 +149,7 @@ test_that("run_workflow integration test", {
   # Run full workflow
   messages <- character()
   result <- withCallingHandlers(
-    run_workflow(alleles, motifs),
+    runWorkflow(alleles, motifs),
     message = function(m) {
       messages <<- c(messages, conditionMessage(m))
     }
