@@ -12,10 +12,10 @@
 #'@format A DNAStringSet with 95 alleles
 #'
 #'@examples \dontrun{
-#'SOL1}
+#'SORL1}
 #'
 #'
-"SOL1"
+"SORL1"
 
 #' DNAStringSet containing 36 Motifs
 #'
@@ -24,7 +24,7 @@
 #' @format A DNASet with 36 motif sequences
 #'
 #' @examples \dontrun{
-#' motifs_SOL1}
+#' motifs_SORL1}
 #'
 #' @source TRviz example data
 #' https://github.com/Jong-hun-Park/trviz/blob/main/examples/sample_code.ipynb
@@ -33,7 +33,7 @@
 #' for decomposing and Visualizing Tandem Repeat Sequences. Bioinformatics
 #' Advances 3, (2023).
 
-"motifs_SOL1"
+"motifs_SORL1"
 
 #' Default TRskim color palette (colorblind-safe)
 #'

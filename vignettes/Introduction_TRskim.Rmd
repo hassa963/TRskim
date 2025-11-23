@@ -67,14 +67,14 @@ table so that insertions or previously unseen motifs are preserved in the
 encoded representation. 
 
 ```{r}
-# SOL1 is a provided DNAStringSet of 95 Tandem repeat alleles for more details: 
+# SORL1 is a provided DNAStringSet of 95 Tandem repeat alleles for more details: 
 # ?SOL1
-# motifs_SOL1 is a provided DNAStringSet of 36 motif sequences within the SOL1 
+# motifs_SORL1 is a provided DNAStringSet of 36 motif sequences within the SOL1 
 # alleles for more details:
 # ?motifs_SOL1
 #here default allowance will be 0 and the base match score is 1 and 
 #indel penalty is -1
-decomposed <- decomposeTRs(SOL1, motifs_SOL1) 
+decomposed <- decomposeTRs(SORL1, motifs_SORL1) 
 
 decomposed_TRs <- decomposed$compositions
 motifs <- decomposed$motifs 

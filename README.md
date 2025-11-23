@@ -47,7 +47,7 @@ library("TRskim")
 To run the Shiny app:
 
 ``` r
-#Under Construction 
+TRskim::runTRskim()
 ```
 
 ## Overview
