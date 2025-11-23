@@ -103,6 +103,15 @@ function. Testing was also assisted by Chat GPT.
 - BioRender.com. BioRender \[Online\]. Available at:
   <https://www.biorender.com> (accessed 26 October 2025).
 
+- Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+  Application Framework for R — Tabsets example. Shiny Gallery, RStudio
+  (2025). <https://shiny.posit.co/r/gallery/application-layout/tabsets>
+
+- Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+  Application Framework for R — File upload example. Shiny Gallery,
+  RStudio (2025).
+  <https://shiny.posit.co/r/gallery/widgets/file-upload/>
+
 - OpenAI. ChatGPT (GPT-5) large language model (2025).
   <https://chat.openai.com/>
 

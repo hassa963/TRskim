@@ -24,9 +24,9 @@ A tandem repeat visualizer.
 
 `TRskim` is an R package that visualizes tandem repeat composition by 
 decomposing sequences into known/novel motifs, encoding then aligning them, 
-and generates visualizations to compare motif patterns across alleles. The tool is 
-intended for those researching tandem repeats and would like to perform a motif 
-composition analysis across alleles.
+and generates visualizations to compare motif patterns across alleles. The tool 
+is intended for those researching tandem repeats and would like to perform a 
+motif composition analysis across alleles.
 
 TRskim provides motif-level decomposition and visualization of tandem repeats, 
 enabling researchers to inspect the internal structure of repeat arrays across 
@@ -105,6 +105,14 @@ visualization for the `plotTR` function. Testing was also assisted by Chat GPT.
 
 - BioRender.com. BioRender [Online]. Available at: https://www.biorender.com
   (accessed 26 October 2025).
+  
+- Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+ Application Framework for R — Tabsets example. Shiny Gallery, RStudio (2025).
+ https://shiny.posit.co/r/gallery/application-layout/tabsets
+ 
+- Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+Application Framework for R — File upload example. Shiny Gallery, RStudio
+(2025). https://shiny.posit.co/r/gallery/widgets/file-upload/
   
 - OpenAI. ChatGPT (GPT-5) large language model (2025). https://chat.openai.com/
 

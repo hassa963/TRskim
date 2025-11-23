@@ -1,4 +1,12 @@
-#looked at file upload and tabsets to creat it
+#structure is based off of Tabsets and file upload examples in the shiny gallery
+
+# Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+# Application Framework for R — Tabsets example. Shiny Gallery, RStudio (2025).
+# https://shiny.posit.co/r/gallery/application-layout/tabsets
+
+# Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+# Application Framework for R — File upload example. Shiny Gallery, RStudio
+# (2025). https://shiny.posit.co/r/gallery/widgets/file-upload/
 
 library(shiny)
 
