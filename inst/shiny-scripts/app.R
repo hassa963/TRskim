@@ -39,7 +39,7 @@ ui <- fluidPage(
         "Upload a file containing your known motifs in a single column
         (.txt, .tsv, or .csv). Each motif should be on a separate line.
         The file should be tab-separated. NOTE: current version can only support
-        66 unique motifs"
+        66 unique motifs."
         ),
 
       fileInput( "motif_file", "Motifs",
