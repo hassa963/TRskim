@@ -3,7 +3,7 @@
 \docType{data}
 \name{SORL1}
 \alias{SORL1}
-\title{SOL1 tandem Repeat alleles}
+\title{SORL1 tandem Repeat alleles}
 \format{
 A DNAStringSet with 95 alleles
 }

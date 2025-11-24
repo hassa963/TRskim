@@ -5,7 +5,7 @@
 \alias{motifs_SORL1}
 \title{DNAStringSet containing 36 Motifs}
 \format{
-A DNASet with 36 motif sequences
+A DNAStringSet with 36 motif sequences
 }
 \source{
 TRviz example data
