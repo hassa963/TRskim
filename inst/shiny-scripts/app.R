@@ -73,26 +73,199 @@ ui <- fluidPage(
 
     # Main panel for displaying outputs ----
     mainPanel(
-
-      HTML(
-        "TRskim decomposes tandem repeats into their motif composition, encodes
-        alleles, performs motif-aware multiple sequence alignment, and generates
-        visualizations in the form of bar plots or tile plots.<br><br>
-        This provides motif-level decomposition and visualization of tandem
-        repeats, enabling researchers to inspect the internal structure of
-        repeat arrays across alleles. This level of resolution is essential for
-        studying pathogenic repeat expansions and assessing repeat instability,
-        as motif structure influences disease relevance, mutational dynamics,
-        and secondary structure formation.<br><br>
-        Example files can be found in the inst/extdata folder in the TRskim
-        github repository:<br>
-        - SORL1_tr_sequence.fa – contains the tandem repeat sequences<br>
-        - motifs_SORL1.tsv – contains the motifs"
-      ),
-
       # Output: Tabset w/ plot, decomposition, encoding and alignment ----
       tabsetPanel(
         type = "tabs",
+        tabPanel(
+          "Welcome",
+          HTML('
+    <div style="max-width: 800px; line-height: 1.6;">
+
+      <h3>Welcome to the Tandem Repeat Comparative Analysis and Visualization
+      App</h3>
+
+      <h4>About TRskim</h4>
+
+      <p>
+        TRskim decomposes tandem repeats into their motif composition, encodes
+        alleles, performs motif-aware multiple sequence alignment, and generates
+        visualizations in the form of bar plots or tile plots.
+        This enables motif-level inspection of repeat structure across alleles,
+        helping researchers detect interruptions, examine heterogeneity, and
+        evaluate overall repeat architecture. This level of detail is essential
+        for understanding pathogenic repeat expansions, repeat instability, and
+        motif-driven mutational dynamics.
+      </p>
+
+      <p>
+        Example files are available in the <code>inst/extdata</code> folder of
+        the TRskim GitHub repository.
+        <br><strong>Note:</strong> this example dataset was originally taken
+        from the TRviz Python library (Park et al., 2023).
+      </p>
+
+      <ul>
+        <li><code>SORL1_tr_sequence.fa</code> – tandem repeat sequences</li>
+        <li><code>motifs_SORL1.tsv</code> – motif definitions</li>
+      </ul>
+
+      <p>
+        This app provides an end-to-end workflow for decomposing, encoding,
+        aligning, and visualizing tandem repeats using <strong>TRskim</strong>.
+        Upload your repeat sequences and motif list, and the app will generate a
+        motif-aware alignment and customizable visualizations.
+      </p>
+
+      <h4>How to Use This App</h4>
+
+      <ol>
+        <li>
+          <strong>Upload a FASTA file</strong> containing tandem repeat
+          sequences.
+          Each sequence is treated as an independent allele.
+        </li>
+
+        <li>
+          <strong>Upload a motif file</strong> containing one motif per line
+          (<code>.txt</code> or <code>.tsv</code>).
+          <em>Current version supports up to 66 unique motifs.</em>
+        </li>
+
+        <li>
+          Choose the <strong>visualization type</strong>:
+          <ul>
+            <li><strong>Tile Plot</strong> – each allele shown as a row,
+            colored by motif.</li>
+            <li><strong>Bar Plot</strong> – motif frequency at each aligned
+            position.</li>
+          </ul>
+        </li>
+
+        <li>
+          Select whether the legend should show only motif symbols or
+          <strong>symbol → motif</strong> mappings (e.g., A → ATAT).
+        </li>
+
+        <li>
+          Explore your results in the tab panels:
+          <ul>
+            <li><strong>Plot</strong> – visualization of the aligned
+            repeats</li>
+            <li><strong>Alignment</strong> – encoded multiple sequence
+            alignment</li>
+            <li><strong>Motif Map</strong> – motif-to-symbol mapping
+            table</li>
+          </ul>
+        </li>
+      </ol>
+
+      <h4>Motif File Requirements</h4>
+
+      <ul>
+        <li>One motif per line (no header).</li>
+        <li>Motifs must be uppercase and composed of valid nucleotide characters
+        only.</li>
+        <li>Blank lines will be ignored.</li>
+        <li>Up to 66 unique motifs.</li>
+      </ul>
+
+      <h4>Notes</h4>
+
+      <ul>
+        <li>The decomposition relies on exact matching between motif patterns
+        and sequence structure.</li>
+        <li>The order of motifs in the file does not affect encoding or
+        alignment.</li>
+        <li>Gaps introduced during alignment are shown as <code>-</code> in the
+        Alignment tab.</li>
+      </ul>
+
+    </div>
+  ')
+        )
+        ,
+        tabPanel(
+          "References",
+          HTML('
+    <div style="max-width: 800px; line-height: 1.6;">
+
+      <h3>References</h3>
+
+      <ul>
+        <li>
+          BioRender.com. <em>BioRender</em> [Online]. Available at:
+          <a href="https://www.biorender.com"
+          target="_blank">https://www.biorender.com</a>
+          (accessed 26 October 2025).
+        </li>
+
+        <li>
+          Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. (2025).
+          <em>Shiny: Web Application Framework for R — Tabsets example.</em>
+          Shiny Gallery, RStudio.
+          <a href="https://shiny.posit.co/r/gallery/application-layout/tabsets"
+          target="_blank">
+            Link
+          </a>
+        </li>
+
+        <li>
+          Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. (2025).
+          <em>Shiny: Web Application Framework for R — File upload example.</em>
+          Shiny Gallery, RStudio.
+          <a href="https://shiny.posit.co/r/gallery/widgets/file-upload/"
+          target="_blank">
+            Link
+          </a>
+        </li>
+
+        <li>
+          OpenAI. (2025). ChatGPT (GPT-5) large language model.
+          <a href="https://chat.openai.com/" target="_blank">
+          https://chat.openai.com/</a>
+        </li>
+
+        <li>
+          Pagès H, Aboyoun P, Gentleman R & DebRoy S. (2025).
+          <em>Biostrings: Efficient manipulation of biological strings</em>
+          (R package version 2.77.2).
+          <a href="https://bioconductor.org/packages/Biostrings"
+          target="_blank">
+            Bioconductor
+          </a>, doi:10.18129/B9.bioc.Biostrings
+        </li>
+
+        <li>
+          Park J, Kaufman E, Valdmanis PN & Bafna V. (2023).
+          <em>TRviz: A Python Library for decomposing and Visualizing
+          Tandem Repeat Sequences.</em>
+          Bioinformatics Advances 3.
+        </li>
+
+        <li>
+          R Core Team. (2025). <em>R: A Language and Environment for Statistical
+          Computing.</em>
+          Vienna, Austria: R Foundation for Statistical Computing.
+          <a href="https://www.R-project.org/" target="_blank">
+          https://www.R-project.org/</a>
+        </li>
+
+        <li>
+          Wickham H. (2016). <em>ggplot2: Elegant Graphics for Data Analysis.
+          </em>
+          Springer-Verlag, New York.
+        </li>
+
+        <li>
+          Wickham H. (2007). Reshaping data with the reshape package.
+          <em>J. Stat. Softw.</em> 21, 1–20.
+        </li>
+
+      </ul>
+
+    </div>
+  ')
+        ),
         tabPanel("Plot",
                  p("Visualization of the aligned tandem repeats. Each color
                    represents a unique motif:"),
