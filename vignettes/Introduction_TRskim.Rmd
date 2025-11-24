@@ -207,6 +207,14 @@ deletions across the panel of tandem repeat alleles.
 - BioRender.com. BioRender [Online]. Available at: https://www.biorender.com
   (accessed 26 October 2025).
   
+- Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+ Application Framework for R — Tabsets example. Shiny Gallery, RStudio (2025).
+ https://shiny.posit.co/r/gallery/application-layout/tabsets
+ 
+- Chang W, Cheng J, Allaire J, Sievert C, Schloerke B, et al. Shiny: Web
+Application Framework for R — File upload example. Shiny Gallery, RStudio
+(2025). https://shiny.posit.co/r/gallery/widgets/file-upload/
+  
 - OpenAI. ChatGPT (GPT-5) large language model (2025). https://chat.openai.com/
 
 - Pagès, H., Aboyoun, P., Gentleman, R. & DebRoy, S. Biostrings: Efficient
@@ -227,8 +235,6 @@ Austria: R Foundation for Statistical Computing (2025).
 - Wickham, H. Reshaping data with the reshape package. J. Stat.
   Softw. 21, 1–20 (2007).
   
-- Wilke, C. cowplot: Streamlined Plot Theme and Plot Annotations for ggplot2. R      
-package version 1.2.0, https://CRAN.R-project.org/package=cowplot (2025)
 
 ```{r}
 sessionInfo()
