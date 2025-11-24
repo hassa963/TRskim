@@ -123,18 +123,34 @@ needed.
 
 ## Align Tandem Repeats
 
-The function `alignTRs` performs multiple sequence alignment of encoded tandem repeat alleles using a progressive, length-based strategy. Sequences are first sorted from longest to shortest under the assumption that longer TRs are more complete and therefore provide a more informative initial reference. The longest sequence initializes the alignment profile, and each subsequent sequence is globally aligned to this profile using the Needleman–Wunsch algorithm (match = +2, mismatch = –1, gap = –2). Whenever gaps are introduced into the profile during pairwise alignment, all previously aligned sequences are updated to maintain consistent column structure. Once all sequences have been incorporated, the final alignment is returned as a character matrix, and any leading all-gap columns introduced during alignment are removed.
+The function `alignTRs` performs multiple sequence alignment of encoded tandem 
+repeat alleles using a progressive, length-based strategy. Sequences are first 
+sorted from longest to shortest under the assumption that longer TRs are more 
+complete and therefore provide a more informative initial reference. The longest 
+sequence initializes the alignment profile, and each subsequent sequence is 
+globally aligned to this profile using the Needleman–Wunsch algorithm 
+(match = +2, mismatch = –1, gap = –2). Whenever gaps are introduced into the 
+profile during pairwise alignment, all previously aligned sequences are updated 
+to maintain consistent column structure. Once all sequences have been 
+incorporated, the final alignment is returned as a character matrix, and any 
+leading all-gap columns introduced during alignment are removed.
 
 ```{r}
 aligned_TRs <- alignTRs(encoded_TRs)
 
 head(aligned_TRs)
 ```
-This output now allows for direct comparison between alleles as each tandem repeat is aligned relative to each other.  
+This output now allows for direct comparison between alleles as each tandem 
+repeat is aligned relative to each other.  
 
 ## Plot Tandem Repeats 
 
-The function `plotTR` provides two visualization modes for aligned tandem repeats. When given the alignment matrix, it can generate either (1) a tile plot that displays each motif in its aligned position using color-coded symbols, or (2) a bar plot summarizing the frequency of each motif at every aligned position. These visualizations make it easier to inspect motif organization, compare alleles, and identify structural variation across the tandem repeats. 
+The function `plotTR` provides two visualization modes for aligned tandem 
+repeats. When given the alignment matrix, it can generate either (1) a tile plot
+that displays each motif in its aligned position using color-coded symbols, or 
+(2) a bar plot summarizing the frequency of each motif at every aligned 
+position. These visualizations make it easier to inspect motif organization, 
+compare alleles, and identify structural variation across the tandem repeats. 
 
 ```{r, fig.width=10, fig.height=6, out.width="100%"}
 plotTR(aligned_TRs, motif_maps, show_motifs = FALSE)
