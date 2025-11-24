@@ -1,4 +1,4 @@
-#' SOL1 tandem Repeat alleles
+#' SORL1 tandem Repeat alleles
 #'
 #' DNASet containing 95 SORL1 tandem repeat alleles.
 #'
