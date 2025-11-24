@@ -312,14 +312,14 @@ server <- function(input, output) {
     req(motif_seq())
     req(tr_data())
 
-    decomposeTRs(tr_data(), motif_seq())
+    TRskim::decomposeTRs(tr_data(), motif_seq())
   })
 
   # ---- encode ----
   encoded <- reactive({
     req(decomposition())
 
-    encodeTRs(decomposition()$compositions, decomposition()$motifs)
+    TRskim::encodeTRs(decomposition()$compositions, decomposition()$motifs)
   })
 
   # ---- alignment ----
@@ -327,7 +327,7 @@ server <- function(input, output) {
   alignment <- reactive({
     req(encoded())
 
-    alignTRs(encoded()$encoded)
+    TRskim::alignTRs(encoded()$encoded)
   })
 
   # ---- Motif map output ----
