@@ -45,13 +45,13 @@
 #'
 #' Wickham, H. Reshaping data with the reshape package. J. Stat.
 #' Softw. 21, 1–20 (2007).
-#'
+#' @importFrom TRskim default_palette
 #' @import ggplot2
 #' @import reshape2
 #' @export plotTR
 plotTR <- function(aln_matrix,
                    motif_map,
-                   colour_palette = default_palette,
+                   colour_palette = TRskim::default_palette,
                    graph_title = "Tandem Repeat Alignment",
                    title_size = 10,
                    axis_size = 8,

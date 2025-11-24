@@ -35,6 +35,7 @@
 #' trskim_result$bar_plot
 #' trskim_result$tile_plot
 #' }
+#' @importFrom TRskim decomposeTRs encodeTRs plotTR default_palette alignTR
 #' @export runWorkflow
 
 runWorkflow <- function(alleles, motifs, match_score = 1,
@@ -43,14 +44,15 @@ runWorkflow <- function(alleles, motifs, match_score = 1,
   message("Decomposing tandem repeats...")
 
   ###decomposition
-  decomposition <- decomposeTRs(alleles, motifs, match_score, indel, allowance)
+  decomposition <- TRskim::decomposeTRs(alleles, motifs, match_score,
+                                        indel, allowance)
 
   decomposed <- decomposition$compositions
 
   message("Encoding tandem repeats....")
 
   ####
-  encoding <- encodeTRs(decomposed, decomposition$motifs)
+  encoding <- TRskim::encodeTRs(decomposed, decomposition$motifs)
 
   encoded <- encoding$encoded
 
@@ -62,11 +64,13 @@ runWorkflow <- function(alleles, motifs, match_score = 1,
 
   message("Generating Tile plot visualization...")
 
-  tile_plot <- plotTR(alignment, motif_map)
+  tile_plot <- TRskim::plotTR(alignment, motif_map,
+                              colour_palette = TRskim::default_palette)
 
   message("Generating Bar plot visualization...")
 
-  bar_p <- plotTR(alignment, motif_map, graph_type = "bar")
+  bar_p <- TRskim::plotTR(alignment, motif_map, graph_type = "bar",
+                          colour_palette = TRskim::default_palette )
 
   message("Workflow complete!")
 

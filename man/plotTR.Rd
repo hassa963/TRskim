@@ -7,7 +7,7 @@
 plotTR(
   aln_matrix,
   motif_map,
-  colour_palette = default_palette,
+  colour_palette = TRskim::default_palette,
   graph_title = "Tandem Repeat Alignment",
   title_size = 10,
   axis_size = 8,
