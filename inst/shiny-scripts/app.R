@@ -375,7 +375,8 @@ server <- function(input, output) {
       alignment(),
       encoded()$motif_map,
       show_motifs = input$show_motifs,
-      graph_type = input$plot_type
+      graph_type = input$plot_type,
+      colour_palette = TRskim::default_palette
     )
   })
 
