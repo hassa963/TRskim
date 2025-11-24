@@ -371,7 +371,7 @@ server <- function(input, output) {
     req(alignment())
     req(encoded())
 
-    plotTR(
+    TRskim::plotTR(
       alignment(),
       encoded()$motif_map,
       show_motifs = input$show_motifs,
