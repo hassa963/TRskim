@@ -22,6 +22,8 @@ ui <- fluidPage(
     # Sidebar panel for inputs ----
     sidebarPanel(
 
+      h4("Input Files"),
+
       # Input: Select a fasta file ----
       tags$p("Upload a fasta file containing the sequences of your tandem
              repeats:"),
@@ -36,7 +38,8 @@ ui <- fluidPage(
       tags$p(
         "Upload a file containing your known motifs in a single column
         (.txt, .tsv, or .csv). Each motif should be on a separate line.
-        The file should be tab-separated."
+        The file should be tab-separated. NOTE: current version can only support
+        66 unique motifs"
         ),
 
       fileInput( "motif_file", "Motifs",
@@ -46,6 +49,8 @@ ui <- fluidPage(
 
       # br() element to introduce extra vertical spacing ----
       br(),
+
+      h4("Visualization Settings"),
 
       tags$p("The tile plot visualization displays alleles along the y-axis and
              positions along the x-axis, with colors indicating the underlying
