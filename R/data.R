@@ -21,7 +21,7 @@
 #'
 #' DNAStringSet containing 36 motifs that are in the tandem repeat SORL1
 #'
-#' @format A DNASet with 36 motif sequences
+#' @format A DNAStringSet with 36 motif sequences
 #'
 #' @examples \dontrun{
 #' motifs_SORL1}
