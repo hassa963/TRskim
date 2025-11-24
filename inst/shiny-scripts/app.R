@@ -16,11 +16,6 @@ ui <- fluidPage(
   # App title ----
   titlePanel("Tandem Repeat Comparitive Analysis and Visualization"),
 
-  tags$p("TRskim decomposes tandem repeats into their motif composition,
-             encodes alleles, performs motif-aware multiple sequence alignment,
-             and generates visualizations in the form of bar plots or tile
-             plots."),
-
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
 
@@ -40,7 +35,8 @@ ui <- fluidPage(
 
       tags$p(
         "Upload a file containing your known motifs in a single column
-        (.txt, .tsv, or .csv). Each motif should be on a separate line."
+        (.txt, .tsv, or .csv). Each motif should be on a separate line.
+        The file should be tab-separated."
         ),
 
       fileInput( "motif_file", "Motifs",
@@ -62,7 +58,8 @@ ui <- fluidPage(
                      "Bar Plot" = "bar"
                      )),
 
-      radioButtons("show_motifs", "Do you want unencoded motifs in the legend?:",
+      radioButtons("show_motifs", "Do you want unencoded motifs in the legend?
+                   (ex. 'A' -> 'ATAT'):",
                    c("Yes" = TRUE,
                      "No" = FALSE
                    ))
@@ -72,24 +69,40 @@ ui <- fluidPage(
     # Main panel for displaying outputs ----
     mainPanel(
 
+      HTML(
+        "TRskim decomposes tandem repeats into their motif composition, encodes
+        alleles, performs motif-aware multiple sequence alignment, and generates
+        visualizations in the form of bar plots or tile plots.<br><br>
+        This provides motif-level decomposition and visualization of tandem
+        repeats, enabling researchers to inspect the internal structure of
+        repeat arrays across alleles. This level of resolution is essential for
+        studying pathogenic repeat expansions and assessing repeat instability,
+        as motif structure influences disease relevance, mutational dynamics,
+        and secondary structure formation.<br><br>
+        Example files can be found in the inst/extdata folder in the TRskim
+        github repository:<br>
+        - SORL1_tr_sequence.fa – contains the tandem repeat sequences<br>
+        - motifs_SORL1.tsv – contains the motifs"
+      ),
+
       # Output: Tabset w/ plot, decomposition, encoding and alignment ----
       tabsetPanel(
         type = "tabs",
         tabPanel("Plot",
                  p("Visualization of the aligned tandem repeats. Each color
-                   represents a unique motif."),
+                   represents a unique motif:"),
                  plotOutput("tr_plot")
 
         ),
         tabPanel("Alignment",
                  p("The aligned encoded sequences.
-                   Gaps are represented by '-'."),
+                   Gaps are represented by '-':"),
                  tableOutput("alignment")
 
         ),
         tabPanel("Motif Map",
                  p("Mapping between motif sequences and their
-                   encoded symbols."),
+                   encoded symbols:"),
                  tableOutput("motif_map")
 
         )

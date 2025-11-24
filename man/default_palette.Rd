@@ -3,7 +3,7 @@
 \docType{data}
 \name{default_palette}
 \alias{default_palette}
-\title{Default TRskim color palette (colorblind-safe)}
+\title{Default TRskim color palette}
 \format{
 A character vector of hex color codes.
 }

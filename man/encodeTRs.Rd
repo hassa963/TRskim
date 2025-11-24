@@ -7,20 +7,24 @@
 encodeTRs(decomposed_TRs, motifs)
 }
 \arguments{
-\item{decomposed_TRs}{A list or chracter vector containing the decomposed
-tandem repeat(s) (ex."AC" "AC" "GT" "AC")}
+\item{decomposed_TRs}{A list or character vector containing the decomposed
+tandem repeat(s) (e.g., \code{c("AC", "AC", "GT", "AC")}).}
 
-\item{motifs}{A character vector or DNAStringSet containing the motifs that may be
-in the TR}
+\item{motifs}{A character vector or \code{DNAStringSet} containing the motifs that
+may appear in the tandem repeats.}
 }
 \value{
-Returns encoded tandem repeats in $encoded either as a list if there is
-multiple tandem repeats or as a single string if there is only one and the
-mapping of the motifs to their symbols in $motif_map
+A list with two elements:
+\item{encoded}{The encoded tandem repeats. Returned as a list if there are
+multiple tandem repeats, or as a single string if only one repeat is
+provided.}
+\item{motif_map}{A named vector mapping motifs to their corresponding
+single-character symbols.}
 }
 \description{
-A function that encodes decomposed tandem repeats such that each unique
-motif is a single character symbol. \strong{MAXIMUM OF 66 ENCODINGS}
+Encodes decomposed tandem repeats such that each unique motif is represented
+by a single character symbol. \strong{Note:} Maximum of 66 unique encodings is
+allowed.
 }
 \examples{
 \dontrun{
@@ -31,6 +35,7 @@ decomposed_TRs <- list(decomposed_TR1, decomposed_TR2, decomposed_TR3)
 motifs <- c("AC", "GT", "TTT", "CC")
 encoded <- encodeTRs(decomposed_TRs, motifs)
 encoded
+
 $encoded
 $encoded[[1]]
 [1] "CAABA"
@@ -52,11 +57,12 @@ AC  GT TTT  CC
 decomposed_TR <- c("AC", "AC", "GT", "AC")
 motifs <- c("AC", "GT")
 encoded <- encodeTRs(decomposed_TR, motifs)
+encoded
 
-encoded$encoded
+$encoded
 [1] "AABA"
 
-encoded$motif_map
+$motif_map
  AC  GT
 "A" "B"
 

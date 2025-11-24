@@ -28,7 +28,8 @@
 # DP decomposition with indels
 #assisted by Chat Gpt To translate TRviz algorithm into an R implementation then
 #debugged heavily to allow for proper decomposition (given a skeleton)
-decomposeTR <- function(allele, motifs, match_score = 1, indel = -1, allowance = 0) {
+decomposeTR <- function(allele, motifs, match_score = 1, indel = -1,
+                        allowance = 0) {
 
   #---------------------------------------------------------------
   # Input normalization and validation
@@ -299,32 +300,28 @@ is_valid_nt_string <- function(x) {
 ###User function####
 #' Decomposition of Tandem Repeats
 #'
-#' A function that decomposes alleles into the supplied motifs given either a
-#' character string vector or DNAStringSet of the alleles
+#' Decomposes alleles into their constituent motifs given either a character
+#' vector or a `DNAStringSet` of alleles.
 #'
-#' @param alleles DNAStringSet or character string vector of the Tandem repeats
-#' @param motifs a vector of strings or a DNAStringSet that are the expected
-#' motifs of the Tandem Repeat
-#' @param match_score score for if motif matches sequence this is by default 1
-#' @param indel score for if there is an insertion or deletion in sequence by
-#' default this is -1
-#' @param allowance is the number of mismatches between the motif
-#' and the sequence permitted to be still be later encoded as a motif. By
-#' default this is 0
-#' @return This function returns the tandem repeat allele(s) decomposed into
-#' their constituent motifs as a character vector. If the allele contains only
-#' one tandem repeat, the `$compositions` element will contain that string
-#' directly rather than a vector of repeated motifs.
+#' @param alleles A `DNAStringSet` or character vector of tandem repeat alleles.
+#' @param motifs A vector of strings or a `DNAStringSet` representing the
+#' expected motifs of the tandem repeat.
+#' @param match_score Numeric. Score assigned when a motif matches the sequence.
+#' Default is `1`.
+#' @param indel Numeric. Score assigned for an insertion or deletion in the
+#' sequence. Default is `-1`.
+#' @param allowance Integer. Number of mismatches allowed between the motif and
+#' the sequence for it to still be encoded as that motif. Default is `0`.
 #'
-#' For example, the allele `"ATATAT"` with the motif `"AT"` is decomposed into
-#' `c("AT", "AT", "AT")`.
+#' @return A list containing:
+#' \item{**compositions**}{ The tandem repeat alleles decomposed into their
+#' constituent motifs. If an allele contains only one tandem repeat, this
+#' element is returned as a vector. Otherwise, it is a list of vectors.}
+#' \item{**motifs**}{ A `DNAStringSet` of motifs including any motifs present
+#'  across all supplied alleles.}
 #'
-#' The function also returns an updated `DNAStringSet` of motifs that includes
-#' any motifs present across all supplied alleles.
-#'
-#' If no motifs are found in an allele, the function returns `character(0)` for
-#' that allele and prints a message to inform the user.
-#'
+#' If no motifs are found in an allele, `compositions` will contain
+#' `character(0)` for that allele, and a message is printed to inform the user.
 #'
 #' @references
 #'

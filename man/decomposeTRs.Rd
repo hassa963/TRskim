@@ -7,38 +7,34 @@
 decomposeTRs(alleles, motifs, match_score = 1, indel = -1, allowance = 0)
 }
 \arguments{
-\item{alleles}{DNAStringSet or character string vector of the Tandem repeats}
+\item{alleles}{A \code{DNAStringSet} or character vector of tandem repeat alleles.}
 
-\item{motifs}{a vector of strings or a DNAStringSet that are the expected
-motifs of the Tandem Repeat}
+\item{motifs}{A vector of strings or a \code{DNAStringSet} representing the
+expected motifs of the tandem repeat.}
 
-\item{match_score}{score for if motif matches sequence this is by default 1}
+\item{match_score}{Numeric. Score assigned when a motif matches the sequence.
+Default is \code{1}.}
 
-\item{indel}{score for if there is an insertion or deletion in sequence by
-default this is -1}
+\item{indel}{Numeric. Score assigned for an insertion or deletion in the
+sequence. Default is \code{-1}.}
 
-\item{allowance}{is the number of mismatches between the motif
-and the sequence permitted to be still be later encoded as a motif. By
-default this is 0}
+\item{allowance}{Integer. Number of mismatches allowed between the motif and
+the sequence for it to still be encoded as that motif. Default is \code{0}.}
 }
 \value{
-This function returns the tandem repeat allele(s) decomposed into
-their constituent motifs as a character vector. If the allele contains only
-one tandem repeat, the \verb{$compositions} element will contain that string
-directly rather than a vector of repeated motifs.
+A list containing:
+\item{\strong{compositions}}{ The tandem repeat alleles decomposed into their
+constituent motifs. If an allele contains only one tandem repeat, this
+element is returned as a vector. Otherwise, it is a list of vectors.}
+\item{\strong{motifs}}{ A \code{DNAStringSet} of motifs including any motifs present
+across all supplied alleles.}
 
-For example, the allele \code{"ATATAT"} with the motif \code{"AT"} is decomposed into
-\code{c("AT", "AT", "AT")}.
-
-The function also returns an updated \code{DNAStringSet} of motifs that includes
-any motifs present across all supplied alleles.
-
-If no motifs are found in an allele, the function returns \code{character(0)} for
-that allele and prints a message to inform the user.
+If no motifs are found in an allele, \code{compositions} will contain
+\code{character(0)} for that allele, and a message is printed to inform the user.
 }
 \description{
-A function that decomposes alleles into the supplied motifs given either a
-character string vector or DNAStringSet of the alleles
+Decomposes alleles into their constituent motifs given either a character
+vector or a \code{DNAStringSet} of alleles.
 }
 \examples{
 \dontrun{

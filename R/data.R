@@ -1,6 +1,6 @@
 #' SOL1 tandem Repeat alleles
 #'
-#' DNASet containing 95 tandem repeat alleles
+#' DNASet containing 95 SORL1 tandem repeat alleles.
 #'
 #' @source TRviz example data
 #' https://github.com/Jong-hun-Park/trviz/tree/main/examples/data
@@ -19,7 +19,7 @@
 
 #' DNAStringSet containing 36 Motifs
 #'
-#' DNAStringSet containing 36 motifs that are in the tandem repeat SOL1
+#' DNAStringSet containing 36 motifs that are in the tandem repeat SORL1
 #'
 #' @format A DNASet with 36 motif sequences
 #'
@@ -35,7 +35,7 @@
 
 "motifs_SORL1"
 
-#' Default TRskim color palette (colorblind-safe)
+#' Default TRskim color palette
 #'
 #' A vector of 66 distinct colors used by `plotTR()`
 #' when no palette is supplied.

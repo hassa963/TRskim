@@ -1,32 +1,41 @@
 #' Plot a Tandem Repeat Alignment
 #'
-#' Visualizes an aligned tandem repeat matrix as a colored tile graph.
+#' Visualizes an aligned tandem repeat matrix as a colored tile plot or bar
+#' plot.
 #'
-#' @param aln_matrix A character matrix returned by alignTRs()
-#' @param motif_map A named character vector mapping encoded letters to motifs
-#' **ALL must be named**
-#' @param colour_palette Vector of colours (default = default_palette)
-#' @param graph_title Plot title
-#' @param title_size Font size for title
-#' @param axis_size Font size for axis titles
-#' @param legend_size Font size for legend
-#' @param show_motifs  Whether or not user wants actual motif or encoded motif
-#' in their legend
-#' @param graph_type The user can select the type of visualization they want
-#' for the plot so that it can either be a tile plot using the argument "tile"
-#' or a bar plot using the argument "bar"
+#' @param aln_matrix A character matrix returned by `alignTRs()`. Each row
+#' typically represents an allele, and each column represents a motif position.
+#' @param motif_map A **fully named** character vector mapping encoded letters
+#' to motifs.
+#' @param colour_palette A vector of colors to use for plotting
+#' (default = `default_palette`).
+#' @param graph_title A character string specifying the plot title.
+#' (default = "Tandem Repeat Alignment")
+#' @param title_size Numeric value specifying font size for the title.
+#' (default = `10`)
+#' @param axis_size Numeric value specifying font size for axis labels.
+#' (default = `8`)
+#' @param legend_size Numeric value specifying font size for the legend.
+#' (default = `8`)
+#' @param show_motifs Logical. Whether to display the actual motif or the
+#' encoded motif in the legend. (default = `TRUE`)
+#' @param graph_type Character. Type of plot to generate: `"tile"` for a tile
+#' plot showing motif composition of all alleles, or `"bar"` for a bar plot
+#' showing motif frequency at each position. (default = `tile`)
 #'
+#' @return A ggplot object representing the tandem repeat alignment.
 #' @examples
 #' \dontrun{
-#' #Example
+#'
 #' motif_map <- c(GCTT = "A", TCC = "B", GTG = "C")
 #' encoded_trs <- c("AABA", "ABA", "BAC")
 #'
 #' alignment <- alignTRs(encoded_trs)
-#' plotTR(alignment, motif_map)
-#' }
 #'
-#' @return A ggplot object, or list(plot, legend) if large = TRUE
+#' plotTR(alignment, motif_map)
+#'
+#' plotTR(alignment, motif_map, graph_type = "bar")
+#' }
 #'
 #' @references OpenAI. ChatGPT (GPT-5) large language model (2025).
 #' https://chat.openai.com/
@@ -37,12 +46,8 @@
 #' Wickham, H. Reshaping data with the reshape package. J. Stat.
 #' Softw. 21, 1–20 (2007).
 #'
-#' Wilke, C. cowplot: Streamlined Plot Theme and Plot Annotations for ggplot2.
-#' R package version 1.2.0, https://CRAN.R-project.org/package=cowplot (2025)
-#'
 #' @import ggplot2
 #' @import reshape2
-#' @import cowplot
 #' @export plotTR
 plotTR <- function(aln_matrix,
                    motif_map,
@@ -131,7 +136,8 @@ plotTR <- function(aln_matrix,
     ## -------------------------- ##
     ## Plot construction
     ## -------------------------- ##
-    tr_plot <- ggplot2::ggplot(aln_long, aes(x = Position, y = TR, fill = Motif)) +
+    tr_plot <- ggplot2::ggplot(aln_long, aes(x = Position, y = TR, fill = Motif)
+                               ) +
       ggplot2::geom_tile(color = "white", linewidth = 0.4) +
       ggplot2::scale_fill_manual(
         values = motif_colors,

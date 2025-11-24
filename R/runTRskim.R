@@ -20,4 +20,4 @@ runTRskim <- function(){
   return(shiny_launch)
 }
 
-
+#[END]

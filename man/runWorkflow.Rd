@@ -2,31 +2,50 @@
 % Please edit documentation in R/runWorkflow.R
 \name{runWorkflow}
 \alias{runWorkflow}
-\title{Running The TRskim Workflow}
+\title{Running the TRskim Workflow}
 \usage{
 runWorkflow(alleles, motifs, match_score = 1, indel = -1, allowance = 0)
 }
 \arguments{
-\item{alleles}{DNAStringSet or character string vector of the Tandem repeats}
+\item{alleles}{A \code{DNAStringSet} or character vector of tandem repeat alleles.}
 
-\item{motifs}{a vector of strings or a DNAStringSet that are the expected
-motifs of the Tandem Repeat}
+\item{motifs}{A vector of strings or a \code{DNAStringSet} representing the
+expected motifs of the tandem repeat.}
 
-\item{match_score}{score for if motif matches sequence this is by default 1}
+\item{match_score}{Numeric. Score assigned when a motif matches the sequence.
+Default is \code{1}.}
 
-\item{indel}{score for if there is an insertion or deletion in sequence by
-default this is -1}
+\item{indel}{Numeric. Score assigned for an insertion or deletion in the
+sequence. Default is \code{-1}.}
 
-\item{allowance}{is the number of mismatches between the motif
-and the sequence permitted to be still be later encoded as a motif. By
-default this is 0}
+\item{allowance}{Integer. Number of mismatches allowed between the motif and
+the sequence for it to still be encoded as that motif. Default is \code{0}.}
 }
 \value{
-The function returns a list containing the decompositions
-($decomposition), encodings ($encoded), motif map ($motif_map)
-alignment matrix ($alignment), bar plot visualization ($bar_plot) and tile
-plot visualization ($tile_plot) of the TRskim package work flow.
+A list containing:
+\item{decomposition}{The tandem repeat alleles decomposed into their
+constituent motifs.}
+\item{encoded}{The encoded tandem repeats.}
+\item{motif_map}{Mapping of motifs to single-character symbols used in the
+encoding.}
+\item{alignment}{Character matrix representing the aligned tandem repeats.}
+\item{bar_plot}{Bar plot visualization of motif frequencies at each
+position.}
+\item{tile_plot}{Tile plot visualization of motif composition across
+alleles.}
 }
 \description{
-A function that performs all the steps of the TRskim workflow
+Performs all steps of the TRskim workflow, including decomposition, encoding,
+alignment, and visualization of tandem repeats.
+}
+\examples{
+\dontrun{
+alleles <- c("ATATAT", "CGCG")
+motifs <- c("AT", "CG")
+trskim_result <- runWorkflow(alleles, motifs)
+trskim_result$decomposition
+trskim_result$encoded
+trskim_result$bar_plot
+trskim_result$tile_plot
+}
 }

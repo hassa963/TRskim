@@ -19,7 +19,7 @@ Advances 3, (2023).
 motifs_SORL1
 }
 \description{
-DNAStringSet containing 36 motifs that are in the tandem repeat SOL1
+DNAStringSet containing 36 motifs that are in the tandem repeat SORL1
 }
 \examples{
 \dontrun{

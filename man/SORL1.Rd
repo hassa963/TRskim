@@ -19,7 +19,7 @@ Advances 3, (2023).
 SORL1
 }
 \description{
-DNASet containing 95 tandem repeat alleles
+DNASet containing 95 SORL1 tandem repeat alleles.
 }
 \examples{
 \dontrun{

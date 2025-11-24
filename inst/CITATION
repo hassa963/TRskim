@@ -1,0 +1,13 @@
+citHeader("To cite TRskim in publications use:")
+
+citEntry(
+  entry = "Unpublished",
+  title = "TRskim: A tandem repeat comparison and visualization tool",
+  author = "Nour Hassan",
+  year = "2025",
+  note = "Unpublished",
+  textVersion = paste(
+    "Hassan, N. (2025) TRskim: A tandem repeat comparison and visualization tool.",
+    "Unpublished. URL https://github.com/hassa963/TRskim"
+  )
+)

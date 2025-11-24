@@ -3,7 +3,8 @@ Type: Package
 Title: TRskim: Tandem repeat motif visualizer
 Version: 0.1.0
 Authors@R: 
-    person("Nour", "Hassan", , "nour.hassan@mail.utoronto.ca", role = c("aut", "cre"))
+    person("Nour", "Hassan", , "nour.hassan@mail.utoronto.ca", role = c("aut", 
+    "cre"))
 Maintainer: Nour Hassan <nour.hassan@mail.utoronto.ca>
 Description: TRskim is an R package that visualizes tandem repeat composition by 
   decomposing sequences into known/novel motifs, aligning them, and generating 
@@ -20,7 +21,6 @@ Imports:
   ggplot2,
   reshape2,
   methods,
-  cowplot,
   stats,
   shiny
 biocViews: 

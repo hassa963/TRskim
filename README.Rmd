@@ -18,7 +18,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-A tandem repeat visualizer.
+A tandem repeat comparison and visualization tool.
 
 ## Description
 
@@ -66,40 +66,53 @@ browseVignettes("TRskim")
 `TRskim` contains 6 functions:
 
 
-1. ***decomposeTRs*** for decomposing tandem repeats into their motifs.
+1. `decomposeTRs` for decomposing tandem repeats into their motifs.
 
-2. ***encodeTRs*** for encoding decomposed tandem repeats into their motifs such 
+2. `encodeTRs` for encoding decomposed tandem repeats into their motifs such 
     that each motif has a one character symbol. **Can only encode a maximum of
     66 different motifs**
     
-3. ***alignTRs*** for aligning tandem repeats by their motifs.
+3. `alignTRs` for aligning tandem repeats by their motifs.
 
-4. ***plotTR*** for visualizing aligned tandem repeats by their motif 
+4. `plotTR` for visualizing aligned tandem repeats by their motif 
    composition.
-5. ***run_workflow*** for performing all the steps of the TRskim workflow
-   
-The package also contains DNAstringSets of tandem repeats and motifs, called 
-SOL1 and motifs_SOL1. Refer to package vignette for more details. Overview of 
-the package is shown below.
+5. `runWorkflow` for performing all the steps of the TRskim workflow with 
+  only one function call.
+  
+6. `runTRskim` for launching the TRskim shiny app. 
+  
+The package also contains example DNAStringSet objects of tandem repeats and 
+motifs, named SORL1 and motifs_SORL1, respectively. These can be used as input 
+to explore the TRskim workflow and test functions such as decomposeTRs(), 
+encodeTRs(), and plotTR().
+
+For detailed guidance on how to use these example datasets, refer to the package
+vignette. Below is an overview of the TRskim package
 
 ![](./inst/extdata/TRskim_Overview.png)
 
 ## Contributions
 
-The author of TRskim is Nour Hassan. TRskim contains 4 functions. All of which 
-were written by the author and utilizes functions from other packages. The 
-algorithm for decomposing the tandem repeats in `decomposeTRs` is based on the 
-algorithm from a python library called TRviz (Park et al., 2023), and Chat GPT 
-was used to dissect said algorithm and create a skeleton for how to implement 
-something similar in R. The function also utilizes `Biostrings` by taking in 
-`DNAString`s and `DNAStringSet`s and the function `matchPattern()` to identify 
-where the motifs match in the allele. For `alignTRs`, Chat GPT was used to 
-dissecting logic for aligning tandem repeats by motif. For `plotTR`, the ggplot 
-function from `ggplot2`was used to generate a tile plot visualization of the 
-tandem repeats and `reshape2` was used to format the data frame. `cowplot` was 
-also used to remove the legend from the plot for large data.Chat GPT was 
-used to debug code for all the functions and decipher how to generate 
-visualization for the `plotTR` function. Testing was also assisted by Chat GPT. 
+The author of TRskim is Nour Hassan. TRskim contains six functions, all written 
+by the author, which utilize functions from other R packages.
+
+The algorithm for decomposing tandem repeats in decomposeTRs is based on the 
+approach used in the Python library TRviz (Park et al., 2023). ChatGPT was used 
+to dissect the TRviz algorithm and create a skeleton for implementing a similar 
+approach in R. The function leverages the Biostrings package, using DNAString 
+and DNAStringSet objects along with the matchPattern() function to identify 
+motif matches within alleles.
+
+For alignTRs, ChatGPT assisted in dissecting the logic for aligning tandem 
+repeats by motif. The plotTR function generates tile and bar plot visualizations 
+of the tandem repeats using ggplot2, while reshape2 is used to format the data 
+for plotting. ChatGPT was also used to debug the code for all functions and to 
+assist in designing the visualizations for plotTR. Testing of functions was 
+supported with guidance from ChatGPT.
+
+Example datasets (SORL1 and motifs_SORL1) were taken from the TRviz Python 
+library (Park et al., 2023) and are included in the package under inst/extdata
+.
 
 ## References 
 
@@ -134,8 +147,6 @@ Austria: R Foundation for Statistical Computing (2025).
 - Wickham, H. Reshaping data with the reshape package. J. Stat.
   Softw. 21, 1–20 (2007).
   
-- Wilke, C. cowplot: Streamlined Plot Theme and Plot Annotations for ggplot2. R      
-package version 1.2.0, https://CRAN.R-project.org/package=cowplot (2025)
 
 
 ## Acknowledgements 

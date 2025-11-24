@@ -61,7 +61,7 @@ encoded_trs <- c("AABA", "ABA", "BA")
 alignTRs(encoded_trs)
 
 ###expected
-#' [,1] [,2] [,3] [,4]
+    [,1] [,2] [,3] [,4]
 TR1 "A"  "A"  "B"  "A"
 TR2 "-"  "A"  "B"  "A"
 TR3 "-"  "-"  "B"  "A"
