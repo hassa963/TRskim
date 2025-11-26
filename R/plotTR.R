@@ -45,7 +45,6 @@
 #'
 #' Wickham, H. Reshaping data with the reshape package. J. Stat.
 #' Softw. 21, 1–20 (2007).
-#' @importFrom TRskim default_palette
 #' @import ggplot2
 #' @import reshape2
 #' @export plotTR

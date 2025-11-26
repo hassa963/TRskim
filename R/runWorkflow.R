@@ -35,7 +35,7 @@
 #' trskim_result$bar_plot
 #' trskim_result$tile_plot
 #' }
-#' @importFrom TRskim decomposeTRs encodeTRs plotTR default_palette alignTR
+#' @importFrom TRskim decomposeTRs encodeTRs plotTR alignTRs
 #' @export runWorkflow
 
 runWorkflow <- function(alleles, motifs, match_score = 1,

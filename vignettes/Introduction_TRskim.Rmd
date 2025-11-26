@@ -196,6 +196,11 @@ Overall, the bar plot complements the tile alignment by offering a concise
 overview of motif conservation, variation, and the presence of insertions or 
 deletions across the panel of tandem repeat alleles.
 
+
+```{r}
+sessionInfo()
+```
+
 ## Package reference 
 
 - Hassan, N. (2025) TRskim: tandem repeat visualizer for BCB410H. Unpublished.
@@ -235,9 +240,4 @@ Austria: R Foundation for Statistical Computing (2025).
 - Wickham, H. Reshaping data with the reshape package. J. Stat.
   Softw. 21, 1–20 (2007).
   
-
-```{r}
-sessionInfo()
-```
-
 #[END]
